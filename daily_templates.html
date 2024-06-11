@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gündəlik Şablonlar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            text-shadow: 2px 2px 4px #aaa;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+        }
+        td {
+            box-shadow: inset 1px 1px 2px #ddd, inset -1px -1px 2px #fff;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.1);
+        }
+        .back-link a:hover {
+            background-color: #0056b3;
+        }
+        .search-form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .search-form input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+            margin-right: 10px;
+        }
+        .search-form button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.1);
+        }
+        .search-form button:hover {
+            background-color: #45a049;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .action-buttons button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.1);
+        }
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        .template-action-buttons button {
+            padding: 5px 10px;
+            margin: 5px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1), -3px -3px 8px rgba(255, 255, 255, 0.1);
+        }
+        .template-action-buttons .edit-button {
+            background-color: #007BFF;
+            color: white;
+        }
+        .template-action-buttons .edit-button:hover {
+            background-color: #0056b3;
+        }
+        .template-action-buttons .delete-button {
+            background-color: #FF0000;
+            color: white;
+        }
+        .template-action-buttons .delete-button:hover {
+            background-color: #cc0000;
+        }
+        @media (max-width: 600px) {
+            table, th, td {
+                font-size: 14px;
+            }
+            .search-form input, .search-form button, .action-buttons button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Gündəlik Şablonlar</h1>
+    <div class="search-form">
+        <input type="date" id="searchDate" placeholder="Tarix seçin">
+        <button onclick="searchByDate()">Axtar</button>
+    </div>
+    <div class="action-buttons">
+        <button onclick="downloadExcel()">Excel Formatında Yüklə</button>
+    </div>
+    <table id="dailyTemplatesTable">
+        <thead>
+            <tr>
+                <th>Maşının nömrəsi</th>
+                <th>Fermer</th>
+                <th>1-ci növ</th>
+                <th>2-ci növ</th>
+                <th>3-cü növ</th>
+                <th>Tarix</th>
+                <th>Əməliyyatlar</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="back-link">
+        <a href="index.html">Geri Dön</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    <script>
+        const binId = '66682ba8acd3cb34a855ed20';
+        const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
+
+        async function fetchTemplates() {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                method: 'GET',
+                headers: {
+                    'X-Master-Key': apiKey
+                }
+            });
+            const data = await response.json();
+            return data.record.templates || [];
+        }
+
+        function displayTemplates(templates) {
+    const tbody = document.getElementById('dailyTemplatesTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+    templates.forEach((template, index) => {
+        const row = tbody.insertRow();
+        row.insertCell().textContent = template.carNumber;
+        row.insertCell().textContent = template.farmer;
+        row.insertCell().textContent = template.type1;
+        row.insertCell().textContent = template.type2;
+        row.insertCell().textContent = template.type3;
+        row.insertCell().textContent = template.date;
+
+        const actionsCell = row.insertCell();
+        actionsCell.innerHTML = `
+            <div class="template-action-buttons">
+                <button class="edit-button" onclick="editTemplate(${index})">Düzəliş et</button>
+                <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
+            </div>
+        `;
+    });
+}
+
+
+        async function loadDailyTemplates() {
+            const templates = await fetchTemplates();
+            templates.forEach(template => {
+                if (!template.date) {
+                    template.date = new Date().toLocaleDateString('en-CA');
+                }
+            });
+            displayTemplates(templates);
+            await saveTemplates(templates);
+        }
+
+        async function searchByDate() {
+            const searchDate = document.getElementById('searchDate').value;
+            if (!searchDate) {
+                alert('Zəhmət olmasa, bir tarix seçin.');
+                return;
+            }
+
+            const templates = await fetchTemplates();
+            const filteredTemplates = templates.filter(template => template.date === searchDate);
+            displayTemplates(filteredTemplates);
+        }
+
+        async function deleteTemplate(index) {
+            const templates = await fetchTemplates();
+            templates.splice(index, 1);
+            await saveTemplates(templates);
+            loadDailyTemplates();
+        }
+
+        async function editTemplate(index) {
+            const templates = await fetchTemplates();
+            const template = templates[index];
+            
+            const carNumber = prompt('Maşının nömrəsi:', template.carNumber);
+            const farmer = prompt('Fermer:', template.farmer);
+            const type1 = prompt('1-ci növ:', template.type1);
+            const type2 = prompt('2-ci növ:', template.type2);
+            const type3 = prompt('3-cü növ:', template.type3);
+
+            if (carNumber && farmer && type1 && type2 && type3) {
+                templates[index] = { carNumber, farmer, type1, type2, type3, date: template.date };
+                await saveTemplates(templates);
+                loadDailyTemplates();
+            }
+        }
+
+        async function saveTemplates(templates) {
+            await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey
+                },
+                body: JSON.stringify({ templates })
+            });
+        }
+
+        function downloadExcel() {
+    const templates = Array.from(document.querySelectorAll('#dailyTemplatesTable tbody tr')).map(row => {
+        return {
+            'Maşının nömrəsi': row.cells[0].innerText,
+            'Fermer': row.cells[1].innerText,
+            '1-ci növ': row.cells[2].innerText,
+            '2-ci növ': row.cells[3].innerText,
+            '3-cü növ': row.cells[4].innerText,
+            'Tarix': row.cells[5].innerText
+        };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(templates, { header: ["Maşının nömrəsi", "Fermer", "1-ci növ", "2-ci növ", "3-cü növ", "Tarix"] });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Gündəlik Şablonlar');
+    XLSX.writeFile(workbook, 'gundelik_sablonlar.xlsx');
+}
+
+    </script>
+</body>
+</html>
