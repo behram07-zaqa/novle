@@ -7,16 +7,51 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
             background-color: #f4f4f4;
             background: linear-gradient(145deg, #ffffff, #e6e6e6);
             box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
-            padding: 20px;
-            border-radius: 10px;
         }
         h1 {
             text-align: center;
             text-shadow: 2px 2px 4px #aaa;
+            margin-bottom: 20px;
+        }
+        .search-form, .action-buttons, .template-action-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-form input, .search-form button, .action-buttons button, .template-action-buttons button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1), -3px -3px 8px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+        .search-form button, .action-buttons button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .search-form button:hover, .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        .template-action-buttons .edit-button {
+            background-color: #007BFF;
+            color: white;
+        }
+        .template-action-buttons .edit-button:hover {
+            background-color: #0056b3;
+        }
+        .template-action-buttons .delete-button {
+            background-color: #FF0000;
+            color: white;
+        }
+        .template-action-buttons .delete-button:hover {
+            background-color: #cc0000;
         }
         table {
             width: 100%;
@@ -25,13 +60,12 @@
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        table, th, td {
-            border: 1px solid #ccc;
+            overflow-x: auto;
         }
         th, td {
             padding: 10px;
             text-align: left;
+            border: 1px solid #ccc;
         }
         th {
             background: linear-gradient(145deg, #f0f0f0, #cacaca);
@@ -55,83 +89,20 @@
         .back-link a:hover {
             background-color: #0056b3;
         }
-        .search-form {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .search-form input {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
-            margin-right: 10px;
-        }
-        .search-form button {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.1);
-        }
-        .search-form button:hover {
-            background-color: #45a049;
-        }
-        .action-buttons {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .action-buttons button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.1);
-        }
-        .action-buttons button:hover {
-            background-color: #45a049;
-        }
-        .template-action-buttons button {
-            padding: 5px 10px;
-            margin: 5px;
-            font-size: 14px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1), -3px -3px 8px rgba(255, 255, 255, 0.1);
-        }
-        .template-action-buttons .edit-button {
-            background-color: #007BFF;
-            color: white;
-        }
-        .template-action-buttons .edit-button:hover {
-            background-color: #0056b3;
-        }
-        .template-action-buttons .delete-button {
-            background-color: #FF0000;
-            color: white;
-        }
-        .template-action-buttons .delete-button:hover {
-            background-color: #cc0000;
-        }
         @media (max-width: 600px) {
-            table, th, td {
-                font-size: 14px;
+            h1 {
+                font-size: 24px;
             }
-            .search-form input, .search-form button, .action-buttons button {
-                width: 100%;
-                box-sizing: border-box;
+            th, td {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .search-form input, .search-form button, .action-buttons button, .template-action-buttons button {
+                font-size: 14px;
+                padding: 8px;
             }
         }
     </style>
-    
 </head>
 <body>
     <h1>Gündəlik Şablonlar</h1>
@@ -176,27 +147,26 @@
         }
 
         function displayTemplates(templates) {
-    const tbody = document.getElementById('dailyTemplatesTable').getElementsByTagName('tbody')[0];
-    tbody.innerHTML = '';
-    templates.forEach((template, index) => {
-        const row = tbody.insertRow();
-        row.insertCell().textContent = template.carNumber;
-        row.insertCell().textContent = template.farmer;
-        row.insertCell().textContent = template.type1;
-        row.insertCell().textContent = template.type2;
-        row.insertCell().textContent = template.type3;
-        row.insertCell().textContent = template.date;
+            const tbody = document.getElementById('dailyTemplatesTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            templates.forEach((template, index) => {
+                const row = tbody.insertRow();
+                row.insertCell().textContent = template.carNumber;
+                row.insertCell().textContent = template.farmer;
+                row.insertCell().textContent = template.type1;
+                row.insertCell().textContent = template.type2;
+                row.insertCell().textContent = template.type3;
+                row.insertCell().textContent = template.date;
 
-        const actionsCell = row.insertCell();
-        actionsCell.innerHTML = `
-            <div class="template-action-buttons">
-                <button class="edit-button" onclick="editTemplate(${index})">Düzəliş et</button>
-                <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
-            </div>
-        `;
-    });
-}
-
+                const actionsCell = row.insertCell();
+                actionsCell.innerHTML = `
+                    <div class="template-action-buttons">
+                        <button class="edit-button" onclick="editTemplate(${index})">Düzəliş et</button>
+                        <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
+                    </div>
+                `;
+            });
+        }
 
         async function loadDailyTemplates() {
             const templates = await fetchTemplates();
@@ -257,23 +227,24 @@
         }
 
         function downloadExcel() {
-    const templates = Array.from(document.querySelectorAll('#dailyTemplatesTable tbody tr')).map(row => {
-        return {
-            'Maşının nömrəsi': row.cells[0].innerText,
-            'Fermer': row.cells[1].innerText,
-            '1-ci növ': row.cells[2].innerText,
-            '2-ci növ': row.cells[3].innerText,
-            '3-cü növ': row.cells[4].innerText,
-            'Tarix': row.cells[5].innerText
-        };
-    });
+            const templates = Array.from(document.querySelectorAll('#dailyTemplatesTable tbody tr')).map(row => {
+                return {
+                    'Maşının nömrəsi': row.cells[0].innerText,
+                    'Fermer': row.cells[1].innerText,
+                    '1-ci növ': row.cells[2].innerText,
+                    '2-ci növ': row.cells[3].innerText,
+                    '3-cü növ': row.cells[4].innerText,
+                    'Tarix': row.cells[5].innerText
+                };
+            });
 
-    const worksheet = XLSX.utils.json_to_sheet(templates, { header: ["Maşının nömrəsi", "Fermer", "1-ci növ", "2-ci növ", "3-cü növ", "Tarix"] });
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Gündəlik Şablonlar');
-    XLSX.writeFile(workbook, 'gundelik_sablonlar.xlsx');
-}
+            const worksheet = XLSX.utils.json_to_sheet(templates, { header: ["Maşının nömrəsi", "Fermer", "1-ci növ", "2-ci növ", "3-cü növ", "Tarix"] });
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Gündəlik Şablonlar');
+            XLSX.writeFile(workbook, 'gundelik_sablonlar.xlsx');
+        }
 
+        window.onload = loadDailyTemplates;
     </script>
 </body>
 </html>
