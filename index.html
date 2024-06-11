@@ -22,7 +22,7 @@
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             width: 90%;
-            max-width: 400px;
+            max-width: 600px;
             text-align: center;
         }
         h1 {
@@ -33,7 +33,7 @@
             margin-bottom: 15px;
             text-align: left;
         }
-        input, button, select {
+        input, button {
             width: 100%;
             padding: 10px;
             font-size: 16px;
@@ -50,6 +50,14 @@
         }
         button:hover {
             background-color: #0056b3;
+        }
+        .template {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: left;
         }
         .link-group {
             margin-top: 20px;
@@ -70,7 +78,10 @@
             .container {
                 padding: 15px;
             }
-            input, button, select {
+            input, button {
+                font-size: 14px;
+            }
+            .template {
                 font-size: 14px;
             }
         }
@@ -101,15 +112,17 @@
         </div>
         <button id="saveTemplateButton">Yaddaşa Yaz</button>
 
+        <h2>Yaddaşdakı Şablonlar</h2>
+        <div id="templates"></div>
+
         <div class="link-group">
-            <a href="templates.html">Yaddaşdakı Şablonlar</a>
             <a href="report.html">Hesabat Səhifəsi</a>
         </div>
     </div>
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
-        const apiKey = '$2a$10$vPlezLjknFDVxmFDHLoeRu89/TpiguZJujsRh9.jhkYyhaq.fZjhu';
+        const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
         async function fetchTemplates() {
             try {
@@ -159,6 +172,7 @@
                 templates.push(newTemplate);
                 await saveTemplates(templates);
                 clearInputs();
+                displayTemplates(templates);
                 console.log('Template added successfully');
             } else {
                 console.log('Please fill all fields');
@@ -173,7 +187,26 @@
             document.getElementById('type3').value = '';
         }
 
+        function displayTemplates(templates) {
+            const templatesDiv = document.getElementById('templates');
+            templatesDiv.innerHTML = '';
+            templates.forEach(template => {
+                const templateDiv = document.createElement('div');
+                templateDiv.className = 'template';
+                templateDiv.textContent = `${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}`;
+                templatesDiv.appendChild(templateDiv);
+            });
+        }
+
         document.getElementById('saveTemplateButton').addEventListener('click', addTemplate);
+
+        // Yaddaşdakı şablonları göstərmək üçün səhifə yüklənərkən çağırılır
+        async function loadTemplates() {
+            const templates = await fetchTemplates();
+            displayTemplates(templates);
+        }
+
+        window.onload = loadTemplates;
 
         // Gün dəyişdikdə yaddaşı yeniləmək üçün
         const currentDay = new Date().getDate();
