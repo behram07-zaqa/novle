@@ -106,7 +106,7 @@
         function downloadExcel() {
             const table = document.getElementById('reportTable');
             const tableHTML = table.outerHTML.replace(/ /g, '%20');
-            const filename = 'hesabat.xls';
+            const filename = 'hesabat.xlsx';
 
             const downloadLink = document.createElement('a');
             document.body.appendChild(downloadLink);
