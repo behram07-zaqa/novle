@@ -32,6 +32,30 @@
         button:hover {
             background-color: #45a049;
         }
+        #templates {
+            margin-top: 20px;
+        }
+        .template {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .delete-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .delete-button:hover {
+            background-color: darkred;
+        }
         .report-link {
             text-align: center;
             margin-top: 20px;
@@ -77,16 +101,16 @@
     </div>
     <button onclick="addTemplate()">Yaddaşa Yaz</button>
 
+    <h2>Yaddaşda Qalan Şablonlar</h2>
+    <div id="templates"></div>
+
     <div class="report-link">
-        <a href="templates.html">Yaddaşdakı Şablonlar</a>
-    </div>
-    <div class="report-link">
-        <a href="report.html">Hesabat Səhifəsi</a>
+        <a href="report.html">Hesabat Səhifəsinə Keç</a>
     </div>
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
-        const apiKey = '$2a$10$xXY4rAxopMe6S6S5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
+        const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
         async function fetchTemplates() {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
@@ -110,6 +134,15 @@
             });
         }
 
+        async function loadTemplates() {
+            const templates = await fetchTemplates();
+            const templatesDiv = document.getElementById('templates');
+            templatesDiv.innerHTML = '';
+            templates.forEach((template, index) => {
+                displayTemplate(template, index);
+            });
+        }
+
         async function addTemplate() {
             const carNumber = document.getElementById('carNumber').value;
             const farmer = document.getElementById('farmer').value;
@@ -119,11 +152,30 @@
 
             if (carNumber && farmer && type1 && type2 && type3) {
                 const templates = await fetchTemplates();
-                const newTemplate = { carNumber, farmer, type1, type2, type3, date: new Date().toISOString() };
+                const newTemplate = { carNumber, farmer, type1, type2, type3 };
                 templates.push(newTemplate);
                 await saveTemplates(templates);
+                displayTemplate(newTemplate, templates.length - 1);
                 clearInputs();
             }
+        }
+
+        async function deleteTemplate(index) {
+            const templates = await fetchTemplates();
+            templates.splice(index, 1);
+            await saveTemplates(templates);
+            loadTemplates();
+        }
+
+        function displayTemplate(template, index) {
+            const templatesDiv = document.getElementById('templates');
+            const templateDiv = document.createElement('div');
+            templateDiv.className = 'template';
+            templateDiv.innerHTML = `
+                <span>${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}</span>
+                <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
+            `;
+            templatesDiv.appendChild(templateDiv);
         }
 
         function clearInputs() {
@@ -133,6 +185,8 @@
             document.getElementById('type2').value = '';
             document.getElementById('type3').value = '';
         }
+
+        window.onload = loadTemplates;
 
         // Gün dəyişdikdə yaddaşı yeniləmək üçün
         const currentDay = new Date().getDate();
