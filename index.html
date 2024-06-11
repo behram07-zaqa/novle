@@ -182,8 +182,11 @@
 
         async function deleteTemplate(index) {
             const templates = await fetchTemplates(binId);
+            const archiveTemplates = await fetchTemplates(archiveBinId);
             templates.splice(index, 1);
+            archiveTemplates.splice(index, 1);
             await saveTemplates(binId, templates);
+            await saveTemplates(archiveBinId, archiveTemplates);
             loadTemplates();
         }
 
