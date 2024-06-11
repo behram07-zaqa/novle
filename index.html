@@ -6,31 +6,62 @@
     <title>Şablon Meneceri</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #e96443, #904e95);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
             margin: 20px;
-            background-color: #f4f4f4;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         h1, h2 {
             text-align: center;
+            margin: 20px 0;
+            color: #007BFF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         .input-group {
             margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #333;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
         input, button, select {
             padding: 10px;
-            font-size: 16px;
-            width: 100%;
+            font-size: 1.1em;
             margin-top: 5px;
             border-radius: 5px;
             border: 1px solid #ccc;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #007BFF;
             color: white;
             cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
         #templates {
             margin-top: 20px;
@@ -44,6 +75,12 @@
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .template:hover {
+            background-color: #f1f1f1;
+            transform: scale(1.02);
         }
         .delete-button {
             background-color: red;
@@ -52,6 +89,8 @@
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 3px;
+            transition: background 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 0, 0, 0.2);
         }
         .delete-button:hover {
             background-color: darkred;
@@ -66,22 +105,27 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
         }
         .report-link a:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
         }
         @media only screen and (max-width: 600px) {
-            input, button, select {
-                width: 100%;
+            .container {
+                padding: 15px;
             }
-        }
-        @media only screen and (max-width: 600px) {
             .input-group, button, .template, .report-link {
                 width: 100%;
                 box-sizing: border-box;
             }
+            label {
+                font-size: 1em;
+            }
             input, button, select {
-                font-size: 14px;
+                font-size: 1em;
+                padding: 8px;
             }
             .template {
                 flex-direction: column;
@@ -94,33 +138,33 @@
     </style>
 </head>
 <body>
-    <h1>Şablon Meneceri</h1>
-    <div class="input-group">
-        <label for="carNumber">Maşının nömrəsi</label>
-        <input type="text" id="carNumber" placeholder="Maşının nömrəsini daxil edin">
-    </div>
-    <div class="input-group">
-        <label for="farmer">Fermer</label>
-        <input type="text" id="farmer" placeholder="Fermeri daxil edin">
-    </div>
-    <div class="input-group">
-        <label for="type1">1-ci növ</label>
-        <input type="text" id="type1" placeholder="1-ci növü daxil edin">
-    </div>
-    <div class="input-group">
-        <label for="type2">2-ci növ</label>
-        <input type="text" id="type2" placeholder="2-ci növü daxil edin">
-    </div>
-    <div class="input-group">
-        <label for="type3">3-cü növ</label>
-        <input type="text" id="type3" placeholder="3-cü növü daxil edin">
-    </div>
-    <button onclick="addTemplate()">Yaddaşa Yaz</button>
+    <div class="container">
+        <h1>Şablon Meneceri</h1>
+        <div class="input-group">
+            <label for="carNumber">Maşının nömrəsi</label>
+            <input type="text" id="carNumber" placeholder="Maşının nömrəsini daxil edin">
+        </div>
+        <div class="input-group">
+            <label for="farmer">Fermer</label>
+            <input type="text" id="farmer" placeholder="Fermeri daxil edin">
+        </div>
+        <div class="input-group">
+            <label for="type1">1-ci növ</label>
+            <input type="text" id="type1" placeholder="1-ci növü daxil edin">
+        </div>
+        <div class="input-group">
+            <label for="type2">2-ci növ</label>
+            <input type="text" id="type2" placeholder="2-ci növü daxil edin">
+        </div>
+        <div class="input-group">
+            <label for="type3">3-cü növ</label>
+            <input type="text" id="type3" placeholder="3-cü növü daxil edin">
+        </div>
+        <button onclick="addTemplate()">Yaddaşa Yaz</button>
 
-    <h2>Yaddaşda Qalan Şablonlar</h2>
-    <div id="templates"></div>
-
-   
+        <h2>Yaddaşda Qalan Şablonlar</h2>
+        <div id="templates"></div>
+        
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20'; // Günlük məlumatlar üçün JSONBin ID
@@ -191,7 +235,6 @@
             templateDiv.className = 'template';
             templateDiv.innerHTML = `
                 <span>${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}</span>
-                
             `;
             templatesDiv.appendChild(templateDiv);
         }
@@ -208,7 +251,6 @@
             const templates = await fetchTemplates(binId);
             const currentDate = new Date().toLocaleDateString('en-CA');
 
-            // Əgər son şablonun tarixi bugünkü tarix deyilsə, bugünkü tarixi şablonları saxla
             if (templates.length > 0 && templates[templates.length - 1].date !== currentDate) {
                 const updatedTemplates = templates.filter(template => template.date === currentDate);
                 await saveTemplates(binId, updatedTemplates);
