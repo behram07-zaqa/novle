@@ -99,7 +99,7 @@
             <label for="type3">3-cü növ</label>
             <input type="text" id="type3" placeholder="3-cü növü daxil edin">
         </div>
-        <button onclick="addTemplate()">Yaddaşa Yaz</button>
+        <button id="saveTemplateButton">Yaddaşa Yaz</button>
 
         <div class="link-group">
             <a href="templates.html">Yaddaşdakı Şablonlar</a>
@@ -156,6 +156,8 @@
             document.getElementById('type2').value = '';
             document.getElementById('type3').value = '';
         }
+
+        document.getElementById('saveTemplateButton').addEventListener('click', addTemplate);
 
         // Gün dəyişdikdə yaddaşı yeniləmək üçün
         const currentDay = new Date().getDate();
