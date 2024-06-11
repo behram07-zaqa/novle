@@ -26,10 +26,33 @@
     <div id="notes"></div>
 
     <script>
-        const notesKey = 'notes';
+        const binId = 'YOUR_BIN_ID';
+        const apiKey = 'YOUR_API_KEY';
 
-        function loadNotes() {
-            const notes = JSON.parse(localStorage.getItem(notesKey)) || [];
+        async function fetchNotes() {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                method: 'GET',
+                headers: {
+                    'X-Master-Key': apiKey
+                }
+            });
+            const data = await response.json();
+            return data.record.notes;
+        }
+
+        async function saveNotes(notes) {
+            await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey
+                },
+                body: JSON.stringify({ notes })
+            });
+        }
+
+        async function loadNotes() {
+            const notes = await fetchNotes();
             const notesDiv = document.getElementById('notes');
             notesDiv.innerHTML = '';
             notes.forEach(note => {
@@ -37,13 +60,13 @@
             });
         }
 
-        function addNote() {
+        async function addNote() {
             const noteInput = document.getElementById('noteInput');
             const note = noteInput.value;
             if (note) {
-                const notes = JSON.parse(localStorage.getItem(notesKey)) || [];
+                const notes = await fetchNotes();
                 notes.push(note);
-                localStorage.setItem(notesKey, JSON.stringify(notes));
+                await saveNotes(notes);
                 displayNote(note);
                 noteInput.value = '';
             }
