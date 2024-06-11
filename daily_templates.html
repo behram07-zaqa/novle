@@ -9,8 +9,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
+            background: linear-gradient(135deg, #b5b6b7 0%, #afccf9 100%);
+            color: #1e1e1e;
         }
         .container {
             max-width: 1200px;
@@ -22,9 +22,9 @@
         }
         h1 {
             text-align: center;
-            font-size: 28px;
+            font-size: 18px;
             margin-bottom: 20px;
-            color: #007BFF;
+            color: #ff0000;
         }
         table {
             width: 100%;
@@ -34,30 +34,30 @@
             overflow: hidden;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #000000;
         }
         th, td {
-            padding: 15px;
+            padding: 8px;
             text-align: left;
             font-size: 16px;
         }
         th {
-            background-color: #007BFF;
+            background-color: #00507b;
             color: white;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #b40707;
         }
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #ffffff;
         }
         .back-link {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         .back-link a {
             padding: 12px 24px;
-            background-color: #007BFF;
+            background-color: #000000;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -70,12 +70,12 @@
         }
         .search-form {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         .search-form input {
-            padding: 10px;
+            padding: 8px;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 4px;
             border: 1px solid #ddd;
             margin-right: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -84,27 +84,27 @@
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #ddd;
-            background-color: #4CAF50;
-            color: white;
+            border: 1px solid #000000;
+            background-color: #ffc800;
+            color: rgb(0, 0, 0);
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
         }
         .search-form button:hover {
-            background-color: #45a049;
+            background-color: #d03901;
             transform: scale(1.05);
         }
         .action-buttons {
-            margin-top: 20px;
+            margin-top: 10px;
             text-align: center;
         }
         .action-buttons button {
-            padding: 10px 20px;
+            padding: 5px 10px;
             margin: 5px;
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            background-color: #4CAF50;
+            background-color: #0d8911;
             color: white;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
@@ -116,10 +116,10 @@
         .edit-button {
             background-color: #007BFF;
             border: none;
-            padding: 8px 16px;
+            padding: 3px 8px;
             color: white;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 3px;
             transition: background-color 0.3s, transform 0.3s;
         }
         .edit-button:hover {
@@ -129,39 +129,39 @@
         .delete-button {
             background-color: red;
             border: none;
-            padding: 8px 16px;
+            padding: 2px 6px;
             color: white;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 2px;
             transition: background-color 0.3s, transform 0.3s;
         }
         .delete-button:hover {
-            background-color: darkred;
+            background-color: rgb(177, 15, 15);
             transform: scale(1.05);
         }
         @media only screen and (max-width: 600px) {
             .container {
-                margin: 10px;
-                padding: 15px;
+                margin: 8px;
+                padding: 12px;
             }
             th, td {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 12px;
+                padding: 6px;
             }
             h1 {
-                font-size: 24px;
+                font-size: 18px;
             }
             .search-form input, .search-form button {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 10px;
+                padding: 5px;
             }
             .action-buttons button, .back-link a {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 10px;
+                padding: 5px;
             }
             .edit-button, .delete-button {
-                font-size: 14px;
-                padding: 6px;
+                font-size: 10px;
+                padding: 4px;
             }
         }
     </style>
@@ -189,9 +189,6 @@
         </thead>
         <tbody></tbody>
     </table>
-    <div class="back-link">
-        <a href="index.html">Geri Dön</a>
-    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
     <script>
         const binId = '66682ba8acd3cb34a855ed20'; // Günlük məlumatlar üçün JSONBin ID
