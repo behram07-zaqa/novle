@@ -104,9 +104,7 @@
     <h2>Yaddaşda Qalan Şablonlar</h2>
     <div id="templates"></div>
 
-    <div class="report-link">
-        <a href="report.html">Hesabat Səhifəsinə Keç</a>
-    </div>
+   
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
@@ -173,7 +171,7 @@
             templateDiv.className = 'template';
             templateDiv.innerHTML = `
                 <span>${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}</span>
-                <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
+                
             `;
             templatesDiv.appendChild(templateDiv);
         }
