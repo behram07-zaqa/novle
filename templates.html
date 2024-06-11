@@ -82,6 +82,7 @@
                     }
                 });
                 const data = await response.json();
+                console.log('Fetched templates:', data);
                 return data.record.templates || [];
             } catch (error) {
                 console.error('Error fetching templates:', error);
