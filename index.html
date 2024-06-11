@@ -120,6 +120,7 @@
                     }
                 });
                 const data = await response.json();
+                console.log('Fetched templates:', data);
                 return data.record.templates || [];
             } catch (error) {
                 console.error('Error fetching templates:', error);
@@ -137,6 +138,7 @@
                     },
                     body: JSON.stringify({ templates })
                 });
+                console.log('Templates saved:', templates);
             } catch (error) {
                 console.error('Error saving templates:', error);
             }
