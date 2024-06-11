@@ -52,6 +52,19 @@
         .back-link a:hover {
             background-color: #0056b3;
         }
+        @media only screen and (max-width: 600px) {
+            th, td {
+                font-size: 14px;
+            }
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .back-link a {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -71,7 +84,9 @@
         <tbody></tbody>
     </table>
 
-    
+    <div class="back-link">
+        <a href="index.html">Geri Dön</a>
+    </div>
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
@@ -99,14 +114,14 @@
                 row.insertCell().textContent = template.type1;
                 row.insertCell().textContent = template.type2;
                 row.insertCell().textContent = template.type3;
-                row.insertCell().textContent = new Date().toLocaleDateString();
+                row.insertCell().textContent = template.date;
             });
         }
 
         function downloadExcel() {
             const table = document.getElementById('reportTable');
             const tableHTML = table.outerHTML.replace(/ /g, '%20');
-            const filename = 'hesabat.xlsx';
+            const filename = 'hesabat.xls';
 
             const downloadLink = document.createElement('a');
             document.body.appendChild(downloadLink);
