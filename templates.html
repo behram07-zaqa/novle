@@ -16,9 +16,8 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 900px;
-            height: 500px;
+            width: 100%;
+            max-width: 600px;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -28,7 +27,7 @@
         }
 
         .signin-signup, .panel {
-            padding: 30px;
+            padding: 20px;
             flex: 1;
         }
 
@@ -40,8 +39,9 @@
         }
 
         .signin-signup h3 {
-            font-size: 2em;
+            font-size: 1.5em;
             color: #333;
+            margin-bottom: 20px;
         }
 
         .signin-signup form {
@@ -63,6 +63,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1em;
+            width: calc(100% - 20px); /* For proper padding */
         }
 
         .signin-signup button {
@@ -74,6 +75,7 @@
             font-size: 1em;
             cursor: pointer;
             transition: background 0.3s ease;
+            width: 100%;
         }
 
         .signin-signup button:hover {
@@ -90,7 +92,7 @@
         }
 
         .panel h2 {
-            font-size: 2em;
+            font-size: 1.5em;
             margin-bottom: 10px;
         }
 
@@ -121,6 +123,18 @@
                 flex-direction: row;
                 height: 500px;
             }
+
+            .signin-signup h3, .panel h2 {
+                font-size: 2em;
+            }
+
+            .signin-signup label, .panel p {
+                font-size: 1.2em;
+            }
+
+            .signin-signup input, .signin-signup button, .panel button {
+                font-size: 1.2em;
+            }
         }
     </style>
 </head>
@@ -137,7 +151,7 @@
             </form>
         </div>
         <div class="panel">
-            <h2>Salam </h2>
+            <h2>Salam</h2>
             <p>Zəhmət olmasa düzgün şifrəni daxil edərək giriş edin.</p>
         </div>
     </div>
@@ -148,7 +162,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (username === 'novleyici' && password === '556299') {
+            if (username === 'Novleyici' && password === 'agro625534') {
                 showLoader();
                 setTimeout(() => {
                     redirectToPage();
@@ -165,7 +179,7 @@
         }
 
         function redirectToPage() {
-            window.location.href = 'index.html';
+            window.location.href = '1ciseyfe.html';
         }
     </script>
 </body>
