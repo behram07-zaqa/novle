@@ -203,16 +203,6 @@
         }
 
         window.onload = loadTemplates;
-
-        // Gün dəyişdikdə yaddaşı yeniləmək üçün
-        const currentDay = new Date().getDate();
-        const savedDay = localStorage.getItem('savedDay');
-
-        if (savedDay && currentDay !== parseInt(savedDay)) {
-            saveTemplates([]);
-        }
-
-        localStorage.setItem('savedDay', currentDay);
     </script>
 </body>
 </html>
