@@ -3,41 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hesabat Səhifəsi</title>
+    <title>Canlı izləmə</title>
    <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #aec6ee 100%);
             color: #333;
         }
         .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            max-width: 500px;
+            margin: 16px auto;
+            padding: 16px;
             background-color: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         h1 {
             text-align: center;
-            font-size: 28px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 17px;
             color: #007BFF;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            border-radius: 8px;
+            margin-top: 15px;
+            border-radius: 5px;
             overflow: hidden;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #000000;
         }
         th, td {
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             font-size: 16px;
         }
@@ -86,26 +86,25 @@
         }
         @media only screen and (max-width: 600px) {
             .container {
-                margin: 10px;
-                padding: 15px;
+                margin: 8px;
+                padding: 12px;
             }
             th, td {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 12px;
+                padding: 6px;
             }
             h1 {
-                font-size: 24px;
+                font-size: 18px;
             }
             button, .back-link a {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 10px;
+                padding: 6px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Hesabat Səhifəsi</h1>
-    <button onclick="downloadExcel()">Excel Formatında Yüklə</button>
+    <h1>Canlı izləmə</h1>
     <table id="reportTable">
         <thead>
             <tr>
@@ -119,11 +118,6 @@
         </thead>
         <tbody></tbody>
     </table>
-
-    <div class="back-link">
-        <a href="index.html">Geri Dön</a>
-    </div>
-
     <script>
         const binId = '66682ba8acd3cb34a855ed20'; // Arxiv üçün JSONBin ID
         const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
