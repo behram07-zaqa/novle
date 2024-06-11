@@ -159,8 +159,6 @@
         const archiveBinId = '66687b99ad19ca34f8779583'; // Arxiv məlumatları üçün JSONBin ID
         const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
-        let currentTemplates = []; // Əlavə olunan məlumatları saxlamaq üçün dəyişən
-
         async function fetchTemplates(binId) {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
                 method: 'GET',
@@ -185,7 +183,6 @@
 
         async function loadDailyTemplates() {
             const templates = await fetchTemplates(binId);
-            currentTemplates = templates; // Məlumatları global dəyişəndə saxlayırıq
             displayTemplates(templates);
         }
 
@@ -219,20 +216,25 @@
             const templates = await fetchTemplates(archiveBinId); // Arxivdən məlumatları çəkin
             const filteredTemplates = templates.filter(template => template.date === searchDate);
             displayTemplates(filteredTemplates);
-            currentTemplates = filteredTemplates; // Göstərilən məlumatları saxlayırıq ki, redaktə etmək mümkün olsun
         }
 
         async function deleteTemplate(index) {
-            const updatedTemplates = currentTemplates.filter((template, idx) => idx !== index);
-            if (updatedTemplates.length === currentTemplates.length) return;
+            const templates = await fetchTemplates(binId);
+            const archiveTemplates = await fetchTemplates(archiveBinId);
+            const itemToDelete = templates[index];
 
-            await saveTemplates(archiveBinId, updatedTemplates);
-            currentTemplates = updatedTemplates; // Yenilənmiş məlumatları saxlayırıq
-            displayTemplates(updatedTemplates);
+            const updatedTemplates = templates.filter((template, idx) => idx !== index);
+            const updatedArchiveTemplates = archiveTemplates.filter(template => !(template.carNumber === itemToDelete.carNumber && template.date === itemToDelete.date));
+
+            await saveTemplates(binId, updatedTemplates);
+            await saveTemplates(archiveBinId, updatedArchiveTemplates);
+            loadDailyTemplates();
         }
 
         async function editTemplate(index) {
-            const template = currentTemplates[index];
+            const templates = await fetchTemplates(binId);
+            const archiveTemplates = await fetchTemplates(archiveBinId);
+            const template = templates[index];
 
             const carNumber = prompt('Maşının nömrəsi:', template.carNumber);
             const farmer = prompt('Fermer:', template.farmer);
@@ -241,10 +243,16 @@
             const type3 = prompt('3-cü növ:', template.type3);
 
             if (carNumber && farmer && type1 && type2 && type3) {
-                currentTemplates[index] = { carNumber, farmer, type1, type2, type3, date: template.date };
+                templates[index] = { carNumber, farmer, type1, type2, type3, date: template.date };
+                archiveTemplates.forEach((archiveTemplate, idx) => {
+                    if (archiveTemplate.carNumber === template.carNumber && archiveTemplate.date === template.date) {
+                        archiveTemplates[idx] = { carNumber, farmer, type1, type2, type3, date: template.date };
+                    }
+                });
 
-                await saveTemplates(archiveBinId, currentTemplates);
-                displayTemplates(currentTemplates);
+                await saveTemplates(binId, templates);
+                await saveTemplates(archiveBinId, archiveTemplates);
+                loadDailyTemplates();
             }
         }
 
