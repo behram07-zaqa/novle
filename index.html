@@ -3,27 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fermer Proqramı</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Növləyici qeydi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        input, button, select {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #templates {
+            margin-top: 20px;
+        }
+        .template {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .report-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .report-link a {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .report-link a:hover {
+            background-color: #0056b3;
+        }
+        @media only screen and (max-width: 600px) {
+            input, button, select {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Fermer Məlumatları</h1>
-        <form id="fermerForm">
-            <label for="carNumber">Maşın Nömrəsi:</label>
-            <input type="text" id="carNumber" required>
-            <label for="farmerName">Fermer Adı:</label>
-            <input type="text" id="farmerName" required>
-            <label for="type1">1-ci Növ (%):</label>
-            <input type="text" id="type1" required>
-            <label for="type2">2-ci Növ (%):</label>
-            <input type="text" id="type2" required>
-            <label for="type3">3-cü Növ (%):</label>
-            <input type="text" id="type3" required>
-            <button type="submit">Yadda saxla</button>
-        </form>
-        <a href="template.html">Şablonlara Bax</a>
+    <h1>Şablon Meneceri</h1>
+    <div class="input-group">
+        <label for="carNumber">Maşının nömrəsi</label>
+        <input type="text" id="carNumber" placeholder="Maşının nömrəsini daxil edin">
     </div>
-    <script src="app.js"></script>
+    <div class="input-group">
+        <label for="farmer">Fermer</label>
+        <input type="text" id="farmer" placeholder="Fermeri daxil edin">
+    </div>
+    <div class="input-group">
+        <label for="type1">1-ci növ</label>
+        <input type="text" id="type1" placeholder="1-ci növü daxil edin">
+    </div>
+    <div class="input-group">
+        <label for="type2">2-ci növ</label>
+        <input type="text" id="type2" placeholder="2-ci növü daxil edin">
+    </div>
+    <div class="input-group">
+        <label for="type3">3-cü növ</label>
+        <input type="text" id="type3" placeholder="3-cü növü daxil edin">
+    </div>
+    <button onclick="addTemplate()">Yaddaşa Yaz</button>
+
+    <h2>Yaddaşda Qalan Şablonlar</h2>
+    <div id="templates"></div>
+
+    <div class="report-link">
+        <a href="report.html">Hesabat Səhifəsinə Keç</a>
+    </div>
+
+    <script>
+        const binId = '66682ba8acd3cb34a855ed20';
+        const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
+
+        async function fetchTemplates() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': apiKey
+                    }
+                });
+                const data = await response.json();
+                return data.record.templates || [];
+            } catch (error) {
+                console.error('Error fetching templates:', error);
+                return [];
+            }
+        }
+
+        async function saveTemplates(templates) {
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
+                    },
+                    body: JSON.stringify({ record: { templates } })
+                });
+            } catch (error) {
+                console.error('Error saving templates:', error);
+            }
+        }
+
+        async function loadTemplates() {
+            const templates = await fetchTemplates();
+            const templatesDiv = document.getElementById('templates');
+            templatesDiv.innerHTML = '';
+            templates.forEach((template) => {
+                displayTemplate(template);
+            });
+        }
+
+        async function addTemplate() {
+            const carNumber = document.getElementById('carNumber').value;
+            const farmer = document.getElementById('farmer').value;
+            const type1 = document.getElementById('type1').value;
+            const type2 = document.getElementById('type2').value;
+            const type3 = document.getElementById('type3').value;
+
+            if (carNumber && farmer && type1 && type2 && type3) {
+                const templates = await fetchTemplates();
+                const newTemplate = { carNumber, farmer, type1, type2, type3, date: new Date().toISOString() };
+                templates.push(newTemplate);
+                await saveTemplates(templates);
+                displayTemplate(newTemplate);
+                clearInputs();
+            }
+        }
+
+        function displayTemplate(template) {
+            const templatesDiv = document.getElementById('templates');
+            const templateDiv = document.createElement('div');
+            templateDiv.className = 'template';
+            templateDiv.innerHTML = `
+                <span>${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}</span>
+            `;
+            templatesDiv.appendChild(templateDiv);
+        }
+
+        function clearInputs() {
+            document.getElementById('carNumber').value = '';
+            document.getElementById('farmer').value = '';
+            document.getElementById('type1').value = '';
+            document.getElementById('type2').value = '';
+            document.getElementById('type3').value = '';
+        }
+
+        window.onload = loadTemplates;
+
+        // Gün dəyişdikdə yaddaşı yeniləmək üçün
+        const currentDay = new Date().getDate();
+        const savedDay = localStorage.getItem('savedDay');
+
+        if (savedDay && currentDay !== parseInt(savedDay)) {
+            saveTemplates([]);
+        }
+
+        localStorage.setItem('savedDay', currentDay);
+    </script>
 </body>
 </html>
