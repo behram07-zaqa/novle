@@ -219,12 +219,14 @@
             const templates = await fetchTemplates(archiveBinId); // Arxivdən məlumatları çəkin
             const filteredTemplates = templates.filter(template => template.date === searchDate);
             displayTemplates(filteredTemplates);
+            currentTemplates = filteredTemplates; // Göstərilən məlumatları saxlayırıq ki, redaktə etmək mümkün olsun
         }
 
         async function deleteTemplate(index) {
             const updatedTemplates = currentTemplates.filter((template, idx) => idx !== index);
+            if (updatedTemplates.length === currentTemplates.length) return;
 
-            await saveTemplates(binId, updatedTemplates);
+            await saveTemplates(archiveBinId, updatedTemplates);
             currentTemplates = updatedTemplates; // Yenilənmiş məlumatları saxlayırıq
             displayTemplates(updatedTemplates);
         }
@@ -241,7 +243,7 @@
             if (carNumber && farmer && type1 && type2 && type3) {
                 currentTemplates[index] = { carNumber, farmer, type1, type2, type3, date: template.date };
 
-                await saveTemplates(binId, currentTemplates);
+                await saveTemplates(archiveBinId, currentTemplates);
                 displayTemplates(currentTemplates);
             }
         }
