@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gündəlik Şablonlar</title>
-    <style>
+   <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         h1 {
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
         table {
             width: 100%;
@@ -20,24 +30,28 @@
             margin-top: 20px;
         }
         table, th, td {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
         }
         th, td {
-            padding: 8px;
+            padding: 10px;
             text-align: left;
-            font-size: 14px;
+            font-size: 16px;
+        }
+        th {
+            background-color: #f8f8f8;
         }
         .back-link {
             text-align: center;
             margin-top: 20px;
         }
         .back-link a {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #007BFF;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            font-size: 14px;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
         .back-link a:hover {
             background-color: #0056b3;
@@ -47,20 +61,21 @@
             margin-top: 20px;
         }
         .search-form input {
-            padding: 8px;
-            font-size: 14px;
+            padding: 10px;
+            font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             margin-right: 10px;
         }
         .search-form button {
-            padding: 8px;
-            font-size: 14px;
+            padding: 10px;
+            font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             background-color: #4CAF50;
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
         .search-form button:hover {
             background-color: #45a049;
@@ -70,14 +85,15 @@
             text-align: center;
         }
         .action-buttons button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             margin: 5px;
-            font-size: 14px;
+            font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             background-color: #4CAF50;
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
         .action-buttons button:hover {
             background-color: #45a049;
@@ -85,10 +101,11 @@
         .edit-button {
             background-color: #007BFF;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 16px;
             color: white;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
         .edit-button:hover {
             background-color: #0056b3;
@@ -96,33 +113,38 @@
         .delete-button {
             background-color: red;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 16px;
             color: white;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
         .delete-button:hover {
             background-color: darkred;
         }
         @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
             th, td {
-                font-size: 12px;
-                padding: 6px;
+                font-size: 14px;
+                padding: 8px;
             }
             h1 {
-                font-size: 20px;
+                font-size: 24px;
             }
             .search-form input, .search-form button {
-                font-size: 12px;
-                padding: 6px;
+                font-size: 14px;
+                padding: 8px;
             }
             .action-buttons button, .back-link a {
-                font-size: 12px;
-                padding: 6px;
+                font-size: 14px;
+                padding: 8px;
             }
             .edit-button, .delete-button {
-                font-size: 12px;
-                padding: 5px;
+                font-size: 14px;
+                padding: 6px;
             }
         }
     </style>
