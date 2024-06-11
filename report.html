@@ -63,14 +63,19 @@
         const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
         async function fetchTemplates() {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-                method: 'GET',
-                headers: {
-                    'X-Master-Key': apiKey
-                }
-            });
-            const data = await response.json();
-            return data.record.templates || [];
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': apiKey
+                    }
+                });
+                const data = await response.json();
+                return data.record.templates || [];
+            } catch (error) {
+                console.error('Error fetching templates:', error);
+                return [];
+            }
         }
 
         async function searchTemplates() {
