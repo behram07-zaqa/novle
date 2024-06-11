@@ -4,41 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gündəlik Şablonlar</title>
-   <style>
+  <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
         }
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         h1 {
             text-align: center;
             font-size: 28px;
             margin-bottom: 20px;
+            color: #007BFF;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
         }
         table, th, td {
             border: 1px solid #ddd;
         }
         th, td {
-            padding: 10px;
+            padding: 15px;
             text-align: left;
             font-size: 16px;
         }
         th {
-            background-color: #f8f8f8;
+            background-color: #007BFF;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
         }
         .back-link {
             text-align: center;
@@ -51,10 +62,11 @@
             text-decoration: none;
             border-radius: 5px;
             font-size: 16px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .back-link a:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
         }
         .search-form {
             text-align: center;
@@ -66,6 +78,7 @@
             border-radius: 5px;
             border: 1px solid #ddd;
             margin-right: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .search-form button {
             padding: 10px;
@@ -75,10 +88,11 @@
             background-color: #4CAF50;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .search-form button:hover {
             background-color: #45a049;
+            transform: scale(1.05);
         }
         .action-buttons {
             margin-top: 20px;
@@ -93,10 +107,11 @@
             background-color: #4CAF50;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .action-buttons button:hover {
             background-color: #45a049;
+            transform: scale(1.05);
         }
         .edit-button {
             background-color: #007BFF;
@@ -105,10 +120,11 @@
             color: white;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .edit-button:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
         }
         .delete-button {
             background-color: red;
@@ -117,10 +133,11 @@
             color: white;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .delete-button:hover {
             background-color: darkred;
+            transform: scale(1.05);
         }
         @media only screen and (max-width: 600px) {
             .container {
