@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qeydlər Proqramı</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #notes {
+            margin-top: 20px;
+        }
+        .note {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Qeydlər Proqramı</h1>
+    <input type="text" id="noteInput" placeholder="Yeni qeyd əlavə edin">
+    <button onclick="addNote()">Əlavə et</button>
+    <div id="notes"></div>
+
+    <script>
+        const notesKey = 'notes';
+
+        function loadNotes() {
+            const notes = JSON.parse(localStorage.getItem(notesKey)) || [];
+            const notesDiv = document.getElementById('notes');
+            notesDiv.innerHTML = '';
+            notes.forEach(note => {
+                displayNote(note);
+            });
+        }
+
+        function addNote() {
+            const noteInput = document.getElementById('noteInput');
+            const note = noteInput.value;
+            if (note) {
+                const notes = JSON.parse(localStorage.getItem(notesKey)) || [];
+                notes.push(note);
+                localStorage.setItem(notesKey, JSON.stringify(notes));
+                displayNote(note);
+                noteInput.value = '';
+            }
+        }
+
+        function displayNote(note) {
+            const notesDiv = document.getElementById('notes');
+            const noteDiv = document.createElement('div');
+            noteDiv.className = 'note';
+            noteDiv.textContent = note;
+            notesDiv.appendChild(noteDiv);
+        }
+
+        window.onload = loadNotes;
+    </script>
+</body>
+</html>
