@@ -6,28 +6,12 @@
     <title>Yaddaşdakı Şablonlar</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #333;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 600px;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
         }
         h1 {
-            margin-bottom: 20px;
             text-align: center;
-            color: #007BFF;
         }
         .template {
             border: 1px solid #ccc;
@@ -50,10 +34,7 @@
         .back-link a:hover {
             background-color: #0056b3;
         }
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
+        @media only screen and (max-width: 600px) {
             .template {
                 font-size: 14px;
             }
@@ -61,33 +42,25 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Yaddaşdakı Şablonlar</h1>
-        <div id="templates"></div>
-        <div class="back-link">
-            <a href="index.html">Geri Dön</a>
-        </div>
+    <h1>Yaddaşdakı Şablonlar</h1>
+    <div id="templates"></div>
+    <div class="back-link">
+        <a href="index.html">Geri Dön</a>
     </div>
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
-        const apiKey = '$2a$10$vPlezLjknFDVxmFDHLoeRu89/TpiguZJujsRh9.jhkYyhaq.fZjhu';
+        const apiKey = '$2a$10$xXY4rAxopMe6S6S5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
         async function fetchTemplates() {
-            try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Master-Key': apiKey
-                    }
-                });
-                const data = await response.json();
-                console.log('Fetched templates:', data.record.templates);
-                return data.record.templates || [];
-            } catch (error) {
-                console.error('Error fetching templates:', error);
-                return [];
-            }
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                method: 'GET',
+                headers: {
+                    'X-Master-Key': apiKey
+                }
+            });
+            const data = await response.json();
+            return data.record.templates || [];
         }
 
         async function loadTemplates() {
