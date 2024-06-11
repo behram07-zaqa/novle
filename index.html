@@ -75,10 +75,26 @@
                 width: 100%;
             }
         }
+        @media only screen and (max-width: 600px) {
+            .input-group, button, .template, .report-link {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            input, button, select {
+                font-size: 14px;
+            }
+            .template {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .template span {
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Növləyici Qeydi</h1>
+    <h1>Şablon Meneceri</h1>
     <div class="input-group">
         <label for="carNumber">Maşının nömrəsi</label>
         <input type="text" id="carNumber" placeholder="Maşının nömrəsini daxil edin">
@@ -104,7 +120,9 @@
     <h2>Yaddaşda Qalan Şablonlar</h2>
     <div id="templates"></div>
 
-   
+    <div class="report-link">
+        <a href="report.html">Hesabat Səhifəsinə Keç</a>
+    </div>
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
@@ -150,7 +168,7 @@
 
             if (carNumber && farmer && type1 && type2 && type3) {
                 const templates = await fetchTemplates();
-                const newTemplate = { carNumber, farmer, type1, type2, type3 };
+                const newTemplate = { carNumber, farmer, type1, type2, type3, date: new Date().toLocaleDateString('en-CA') };
                 templates.push(newTemplate);
                 await saveTemplates(templates);
                 displayTemplate(newTemplate, templates.length - 1);
@@ -171,7 +189,7 @@
             templateDiv.className = 'template';
             templateDiv.innerHTML = `
                 <span>${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}</span>
-                
+                <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
             `;
             templatesDiv.appendChild(templateDiv);
         }
