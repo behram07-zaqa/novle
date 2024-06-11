@@ -6,23 +6,12 @@
     <title>Hesabat Səhifəsi</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
         }
         h1 {
             text-align: center;
-            color: #007BFF;
         }
         table {
             width: 100%;
@@ -42,14 +31,12 @@
             margin: 20px 0;
             border-radius: 5px;
             border: 1px solid #ccc;
-            background-color: #007BFF;
+            background-color: #4CAF50;
             color: white;
             cursor: pointer;
-            display: block;
-            width: 100%;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
         .back-link {
             text-align: center;
@@ -65,47 +52,32 @@
         .back-link a:hover {
             background-color: #0056b3;
         }
-        @media (max-width: 600px) {
-            table, th, td {
-                font-size: 14px;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hesabat Səhifəsi</h1>
-        <div>
-            <label for="filterStartDate">Başlama Tarixi</label>
-            <input type="date" id="filterStartDate">
-        </div>
-        <div>
-            <label for="filterEndDate">Bitmə Tarixi</label>
-            <input type="date" id="filterEndDate">
-        </div>
-        <button onclick="loadReport()">Axtarış</button>
-        <button onclick="downloadExcel()">Excel Formatında Yüklə</button>
-        <table id="reportTable">
-            <thead>
-                <tr>
-                    <th>Maşının nömrəsi</th>
-                    <th>Fermer</th>
-                    <th>1-ci növ</th>
-                    <th>2-ci növ</th>
-                    <th>3-cü növ</th>
-                    <th>Tarix</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div class="back-link">
-            <a href="index.html">Geri Dön</a>
-        </div>
+    <h1>Hesabat Səhifəsi</h1>
+    <button onclick="downloadExcel()">Excel Formatında Yüklə</button>
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th>Maşının nömrəsi</th>
+                <th>Fermer</th>
+                <th>1-ci növ</th>
+                <th>2-ci növ</th>
+                <th>3-cü növ</th>
+                <th>Tarix</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div class="back-link">
+        <a href="index.html">Geri Dön</a>
     </div>
 
     <script>
         const binId = '66682ba8acd3cb34a855ed20';
-        const apiKey = '$2a$10$xXY4rAxopMe6S6S5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
+        const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
         async function fetchTemplates() {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
@@ -120,26 +92,16 @@
 
         async function loadReport() {
             const templates = await fetchTemplates();
-            const filterStartDate = document.getElementById('filterStartDate').value;
-            const filterEndDate = document.getElementById('filterEndDate').value;
             const tbody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
             tbody.innerHTML = '';
-
             templates.forEach(template => {
-                const templateDate = new Date(template.date).toLocaleDateString();
-                const startDate = new Date(filterStartDate);
-                const endDate = new Date(filterEndDate);
-
-                if ((!filterStartDate || new Date(template.date) >= startDate) &&
-                    (!filterEndDate || new Date(template.date) <= endDate)) {
-                    const row = tbody.insertRow();
-                    row.insertCell().textContent = template.carNumber;
-                    row.insertCell().textContent = template.farmer;
-                    row.insertCell().textContent = template.type1;
-                    row.insertCell().textContent = template.type2;
-                    row.insertCell().textContent = template.type3;
-                    row.insertCell().textContent = templateDate;
-                }
+                const row = tbody.insertRow();
+                row.insertCell().textContent = template.carNumber;
+                row.insertCell().textContent = template.farmer;
+                row.insertCell().textContent = template.type1;
+                row.insertCell().textContent = template.type2;
+                row.insertCell().textContent = template.type3;
+                row.insertCell().textContent = new Date().toLocaleDateString();
             });
         }
 
