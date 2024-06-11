@@ -145,13 +145,7 @@
 
         async function loadDailyTemplates() {
             const templates = await fetchTemplates();
-            templates.forEach(template => {
-                if (!template.date) {
-                    template.date = new Date().toLocaleDateString('en-CA');
-                }
-            });
             displayTemplates(templates);
-            await saveTemplates(templates);
         }
 
         async function searchByDate() {
@@ -203,10 +197,14 @@
 
         function downloadExcel() {
             const templates = Array.from(document.querySelectorAll('#dailyTemplatesTable tbody tr')).map(row => {
-                return Array.from(row.cells).slice(0, -1).reduce((acc, cell, index) => {
-                    acc[index] = cell.innerText;
-                    return acc;
-                }, {});
+                return {
+                    'Maşının nömrəsi': row.cells[0].innerText,
+                    'Fermer': row.cells[1].innerText,
+                    '1-ci növ': row.cells[2].innerText,
+                    '2-ci növ': row.cells[3].innerText,
+                    '3-cü növ': row.cells[4].innerText,
+                    'Tarix': row.cells[5].innerText
+                };
             });
 
             const worksheet = XLSX.utils.json_to_sheet(templates, { header: ["Maşının nömrəsi", "Fermer", "1-ci növ", "2-ci növ", "3-cü növ", "Tarix"] });
