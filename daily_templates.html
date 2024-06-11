@@ -12,6 +12,7 @@
         }
         h1 {
             text-align: center;
+            font-size: 24px;
         }
         table {
             width: 100%;
@@ -22,8 +23,9 @@
             border: 1px solid #ccc;
         }
         th, td {
-            padding: 10px;
+            padding: 8px;
             text-align: left;
+            font-size: 14px;
         }
         .back-link {
             text-align: center;
@@ -35,6 +37,7 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            font-size: 14px;
         }
         .back-link a:hover {
             background-color: #0056b3;
@@ -44,15 +47,15 @@
             margin-top: 20px;
         }
         .search-form input {
-            padding: 10px;
-            font-size: 16px;
+            padding: 8px;
+            font-size: 14px;
             border-radius: 5px;
             border: 1px solid #ccc;
             margin-right: 10px;
         }
         .search-form button {
-            padding: 10px;
-            font-size: 16px;
+            padding: 8px;
+            font-size: 14px;
             border-radius: 5px;
             border: 1px solid #ccc;
             background-color: #4CAF50;
@@ -67,9 +70,9 @@
             text-align: center;
         }
         .action-buttons button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
+            padding: 8px 16px;
+            margin: 5px;
+            font-size: 14px;
             border-radius: 5px;
             border: 1px solid #ccc;
             background-color: #4CAF50;
@@ -78,6 +81,49 @@
         }
         .action-buttons button:hover {
             background-color: #45a049;
+        }
+        .edit-button {
+            background-color: #007BFF;
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+        .delete-button {
+            background-color: red;
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .delete-button:hover {
+            background-color: darkred;
+        }
+        @media only screen and (max-width: 600px) {
+            th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .search-form input, .search-form button {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .action-buttons button, .back-link a {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .edit-button, .delete-button {
+                font-size: 12px;
+                padding: 5px;
+            }
         }
     </style>
 </head>
@@ -137,8 +183,8 @@
 
                 const actionsCell = row.insertCell();
                 actionsCell.innerHTML = `
-                    <button onclick="editTemplate(${index})">Düzəliş et</button>
-                    <button onclick="deleteTemplate(${index})">Sil</button>
+                    <button class="edit-button" onclick="editTemplate(${index})">Düzəliş et</button>
+                    <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
                 `;
             });
         }
