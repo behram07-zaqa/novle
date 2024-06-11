@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .signin-signup, .panel {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .signin-signup {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signin-signup h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .signin-signup form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .signin-signup label {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #333;
+            text-align: left;
+        }
+
+        .signin-signup input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            width: calc(100% - 20px); /* For proper padding */
+        }
+
+        .signin-signup button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .signin-signup button:hover {
+            background: #0056b3;
+        }
+
+        .panel {
+            background: linear-gradient(to right, #007bff, #0056b3);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .panel p {
+            font-size: 1em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .panel button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #fff;
+            color: #007bff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .panel button:hover {
+            background: #007bff;
+            color: #fff;
+        }
+
+        @media only screen and (min-width: 600px) {
+            .container {
+                flex-direction: row;
+                height: 500px;
+            }
+
+            .signin-signup h3, .panel h2 {
+                font-size: 2em;
+            }
+
+            .signin-signup label, .panel p {
+                font-size: 1.2em;
+            }
+
+            .signin-signup input, .signin-signup button, .panel button {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signin-signup">
+            <h3>Yaş tütün qəbulu</h3>
+            <form id="loginForm" onsubmit="checkCredentials(event)">
+                <label for="username">Login:</label>
+                <input type="text" id="username" name="username" required pattern="[a-zA-Z0-9]{1,20}">
+                <label for="password">Parol:</label>
+                <input type="password" id="password" name="password" required minlength="6" maxlength="20">
+                <button type="submit" id="loginButton">GİRİŞ ET</button>
+            </form>
+        </div>
+        <div class="panel">
+            <h2>Salam</h2>
+            <p>Zəhmət olmasa düzgün şifrəni daxil edərək giriş edin.</p>
+        </div>
+    </div>
+
+    <script>
+        function checkCredentials(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'Novleyici' && password === 'agro625534') {
+                showLoader();
+                setTimeout(() => {
+                    redirectToPage();
+                }, 2000);
+            } else {
+                alert('Login və ya şifrə yanlışdır');
+            }
+        }
+
+        function showLoader() {
+            const loginButton = document.getElementById('loginButton');
+            loginButton.innerHTML = 'Gözləyin...';
+            loginButton.disabled = true;
+        }
+
+        function redirectToPage() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
