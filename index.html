@@ -183,10 +183,13 @@
         async function deleteTemplate(index) {
             const templates = await fetchTemplates(binId);
             const archiveTemplates = await fetchTemplates(archiveBinId);
-            templates.splice(index, 1);
-            archiveTemplates.splice(index, 1);
-            await saveTemplates(binId, templates);
-            await saveTemplates(archiveBinId, archiveTemplates);
+            const itemToDelete = templates[index];
+
+            const updatedTemplates = templates.filter((template, idx) => idx !== index);
+            const updatedArchiveTemplates = archiveTemplates.filter(template => !(template.carNumber === itemToDelete.carNumber && template.date === itemToDelete.date));
+
+            await saveTemplates(binId, updatedTemplates);
+            await saveTemplates(archiveBinId, updatedArchiveTemplates);
             loadTemplates();
         }
 
