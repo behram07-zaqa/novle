@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canlı izləmə</title>
-   <style>
+    <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -13,7 +13,7 @@
             color: #333;
         }
         .container {
-            max-width: 500px;
+            max-width: 800px;
             margin: 16px auto;
             padding: 16px;
             background-color: #fff;
@@ -51,38 +51,33 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-        button {
-            display: inline-block;
-            padding: 12px 24px;
-            font-size: 16px;
-            margin: 20px 0;
-            border-radius: 5px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+        .weight-input {
+            width: 100px;
+            padding: 5px;
+            font-size: 14px;
+            margin-right: 5px;
         }
-        button:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .back-link a {
-            padding: 12px 24px;
+        .save-button {
+            padding: 5px 10px;
+            font-size: 14px;
             background-color: #007BFF;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.3s;
+            border: none;
+            cursor: pointer;
         }
-        .back-link a:hover {
+        .save-button:hover {
             background-color: #0056b3;
-            transform: scale(1.05);
+        }
+        .total-weight {
+            font-weight: bold;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         @media only screen and (max-width: 600px) {
             .container {
@@ -96,33 +91,39 @@
             h1 {
                 font-size: 18px;
             }
-            button, .back-link a {
-                font-size: 10px;
-                padding: 6px;
+            .weight-input, .save-button {
+                font-size: 12px;
+                padding: 5px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Canlı izləmə</h1>
-    <table id="reportTable">
-        <thead>
-            <tr>
-                <th>Maşının nömrəsi</th>
-                <th>Fermer</th>
-                <th>1-ci növ</th>
-                <th>2-ci növ</th>
-                <th>3-cü növ</th>
-                <th>Tarix</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="container">
+        <h1>Canlı izləmə</h1>
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>Maşının nömrəsi</th>
+                    <th>Fermer</th>
+                    <th>1-ci növ</th>
+                    <th>2-ci növ</th>
+                    <th>3-cü növ</th>
+                    <th>Çəki (kg)</th>
+                    <th>Tarix</th>
+                    <th>Əməliyyat</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="total-weight" id="totalWeight">Ümumi Çəki: 0 kg</div>
     <script>
-        const binId = '66682ba8acd3cb34a855ed20'; // Arxiv üçün JSONBin ID
+        const binId = '66682ba8acd3cb34a855ed20'; // Günlük məlumatlar üçün JSONBin ID
+        const archiveBinId = '66687b99ad19ca34f8779583'; // Arxiv məlumatları üçün JSONBin ID
         const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
-        async function fetchTemplates() {
+        async function fetchTemplates(binId) {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
                 method: 'GET',
                 headers: {
@@ -133,33 +134,65 @@
             return data.record.templates || [];
         }
 
+        async function saveTemplates(binId, templates) {
+            await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey
+                },
+                body: JSON.stringify({ templates })
+            });
+        }
+
         async function loadReport() {
-            const templates = await fetchTemplates();
+            const templates = await fetchTemplates(binId);
+            displayTemplates(templates);
+            calculateTotalWeight(templates);
+        }
+
+        function displayTemplates(templates) {
             const tbody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
             tbody.innerHTML = '';
-            templates.forEach(template => {
+            templates.forEach((template, index) => {
                 const row = tbody.insertRow();
                 row.insertCell().textContent = template.carNumber;
                 row.insertCell().textContent = template.farmer;
                 row.insertCell().textContent = template.type1;
                 row.insertCell().textContent = template.type2;
                 row.insertCell().textContent = template.type3;
+                const weightCell = row.insertCell();
+                weightCell.innerHTML = `
+                    <input type="number" class="weight-input" id="weight-${index}" value="${template.weight || ''}" ${template.weight ? 'disabled' : ''}>
+                `;
                 row.insertCell().textContent = template.date;
+                const actionCell = row.insertCell();
+                if (!template.weight) {
+                    actionCell.innerHTML = `
+                        <button class="save-button" onclick="saveWeight(${index})">Yadda saxla</button>
+                    `;
+                }
+                row.dataset.index = index;
             });
         }
 
-        function downloadExcel() {
-            const table = document.getElementById('reportTable');
-            const tableHTML = table.outerHTML.replace(/ /g, '%20');
-            const filename = 'hesabat.xls';
+        function calculateTotalWeight(templates) {
+            const totalWeight = templates.reduce((sum, template) => sum + (parseFloat(template.weight) || 0), 0);
+            document.getElementById('totalWeight').textContent = `Ümumi Çəki: ${totalWeight} kg`;
+        }
 
-            const downloadLink = document.createElement('a');
-            document.body.appendChild(downloadLink);
+        async function saveWeight(index) {
+            const weight = document.getElementById(`weight-${index}`).value;
+            if (!weight) {
+                alert('Zəhmət olmasa çəkini daxil edin');
+                return;
+            }
 
-            downloadLink.href = 'data:application/vnd.ms-excel,' + tableHTML;
-            downloadLink.download = filename;
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
+            const templates = await fetchTemplates(binId);
+            templates[index].weight = parseFloat(weight);
+            await saveTemplates(binId, templates);
+            await saveTemplates(archiveBinId, templates);
+            loadReport();
         }
 
         window.onload = loadReport;
