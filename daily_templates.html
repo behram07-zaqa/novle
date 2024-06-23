@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gündəlik Şablonlar</title>
-  <style>
+    <title>Admin Panel</title>
+    <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -139,6 +139,12 @@
             background-color: rgb(177, 15, 15);
             transform: scale(1.05);
         }
+        .weight-input {
+            width: 100px;
+            padding: 5px;
+            font-size: 14px;
+            margin-right: 5px;
+        }
         @media only screen and (max-width: 600px) {
             .container {
                 margin: 8px;
@@ -183,6 +189,7 @@
                 <th>1-ci növ</th>
                 <th>2-ci növ</th>
                 <th>3-cü növ</th>
+                <th>Çəki (kg)</th>
                 <th>Tarix</th>
                 <th>Əməliyyatlar</th>
             </tr>
@@ -220,6 +227,7 @@
         async function loadDailyTemplates() {
             const templates = await fetchTemplates(binId);
             displayTemplates(templates);
+            calculateTotalWeight(templates);
         }
 
         function displayTemplates(templates) {
@@ -232,14 +240,22 @@
                 row.insertCell().textContent = template.type1;
                 row.insertCell().textContent = template.type2;
                 row.insertCell().textContent = template.type3;
+                const weightCell = row.insertCell();
+                weightCell.innerHTML = `
+                    <input type="number" class="weight-input" id="weight-${index}" value="${template.weight || ''}">
+                `;
                 row.insertCell().textContent = template.date;
-
                 const actionsCell = row.insertCell();
                 actionsCell.innerHTML = `
                     <button class="edit-button" onclick="editTemplate(${index})">Düzəliş et</button>
                     <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
                 `;
             });
+        }
+
+        function calculateTotalWeight(templates) {
+            const totalWeight = templates.reduce((sum, template) => sum + (parseFloat(template.weight) || 0), 0);
+            document.getElementById('totalWeight').textContent = `Ümumi Çəki: ${totalWeight} kg`;
         }
 
         async function searchByDate() {
@@ -277,12 +293,13 @@
             const type1 = prompt('1-ci növ:', template.type1);
             const type2 = prompt('2-ci növ:', template.type2);
             const type3 = prompt('3-cü növ:', template.type3);
+            const weight = prompt('Çəki (kg):', template.weight || '');
 
-            if (carNumber && farmer && type1 && type2 && type3) {
-                templates[index] = { carNumber, farmer, type1, type2, type3, date: template.date };
+            if (carNumber && farmer && type1 && type2 && type3 && weight) {
+                templates[index] = { carNumber, farmer, type1, type2, type3, weight, date: template.date };
                 archiveTemplates.forEach((archiveTemplate, idx) => {
                     if (archiveTemplate.carNumber === template.carNumber && archiveTemplate.date === template.date) {
-                        archiveTemplates[idx] = { carNumber, farmer, type1, type2, type3, date: template.date };
+                        archiveTemplates[idx] = { carNumber, farmer, type1, type2, type3, weight, date: template.date };
                     }
                 });
 
@@ -300,11 +317,12 @@
                     '1-ci növ': row.cells[2].innerText,
                     '2-ci növ': row.cells[3].innerText,
                     '3-cü növ': row.cells[4].innerText,
-                    'Tarix': row.cells[5].innerText
+                    'Çəki': row.cells[5].innerText,
+                    'Tarix': row.cells[6].innerText
                 };
             });
 
-            const worksheet = XLSX.utils.json_to_sheet(templates, { header: ["Maşının nömrəsi", "Fermer", "1-ci növ", "2-ci növ", "3-cü növ", "Tarix"] });
+            const worksheet = XLSX.utils.json_to_sheet(templates, { header: ["Maşının nömrəsi", "Fermer", "1-ci növ", "2-ci növ", "3-cü növ", "Çəki", "Tarix"] });
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Gündəlik Şablonlar');
             XLSX.writeFile(workbook, 'gundelik_sablonlar.xlsx');
