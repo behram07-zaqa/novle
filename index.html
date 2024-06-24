@@ -3,171 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Növləyici qeydi</title>
+    <title>Giriş</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #e96443, #904e95);
-            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
         }
+
         .container {
-            max-width: 1200px;
             width: 100%;
-            margin: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        h1, h2 {
-            text-align: center;
-            margin: 20px 0;
-            color: #007BFF;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .input-group {
-            margin: 10px 0;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
-        label {
-            font-size: 1.1em;
+
+        .signin-signup, .panel {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .signin-signup {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signin-signup h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .signin-signup form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .signin-signup label {
+            font-size: 1em;
             margin-bottom: 5px;
             color: #333;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
-        input, button, select {
+
+        .signin-signup input {
             padding: 10px;
-            font-size: 1.1em;
-            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            border: 1px solid #ccc;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            box-sizing: border-box;
+            font-size: 1em;
+            width: calc(100% - 20px); /* For proper padding */
         }
-        button {
-            background-color: #007BFF;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-        }
-        button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-        #templates {
-            margin-top: 20px;
-        }
-        .template {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #ccc;
-            background-color: #fff;
+
+        .signin-signup button {
             padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            transition: background 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        .template:hover {
-            background-color: #f1f1f1;
-            transform: scale(1.02);
-        }
-        .delete-button {
-            background-color: red;
-            color: white;
             border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: background 0.3s ease;
-            box-shadow: 0 3px 10px rgba(255, 0, 0, 0.2);
-        }
-        .delete-button:hover {
-            background-color: darkred;
-        }
-        .report-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .report-link a {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
             border-radius: 5px;
-            transition: background 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            background: #007bff;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
         }
-        .report-link a:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+
+        .signin-signup button:hover {
+            background: #0056b3;
         }
-        @media only screen and (max-width: 600px) {
+
+        .panel {
+            background: linear-gradient(to right, #007bff, #0056b3);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .panel p {
+            font-size: 1em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .panel button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #fff;
+            color: #007bff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .panel button:hover {
+            background: #007bff;
+            color: #fff;
+        }
+
+        @media only screen and (min-width: 600px) {
             .container {
-                padding: 15px;
+                flex-direction: row;
+                height: 500px;
             }
-            .input-group, button, .template, .report-link {
-                width: 100%;
-                box-sizing: border-box;
+
+            .signin-signup h3, .panel h2 {
+                font-size: 2em;
             }
-            label {
-                font-size: 1em;
+
+            .signin-signup label, .panel p {
+                font-size: 1.2em;
             }
-            input, button, select {
-                font-size: 1em;
-                padding: 8px;
-            }
-            .template {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .template span {
-                margin-bottom: 10px;
+
+            .signin-signup input, .signin-signup button, .panel button {
+                font-size: 1.2em;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Növləyici qeydiyyatı</h1>
-        <div class="input-group">
-            <label for="carNumber">Maşının nömrəsi</label>
-            <input type="text" id="carNumber" placeholder="Maşının nömrəsini daxil edin">
+        <div class="signin-signup">
+            <h3>Yaş tütün qəbulu</h3>
+            <form id="loginForm" onsubmit="checkCredentials(event)">
+                <label for="username">Login:</label>
+                <input type="text" id="username" name="username" required pattern="[a-zA-Z0-9]{1,20}">
+                <label for="password">Parol:</label>
+                <input type="password" id="password" name="password" required minlength="6" maxlength="20">
+                <button type="submit" id="loginButton">GİRİŞ ET</button>
+            </form>
         </div>
-        <div class="input-group">
-            <label for="farmer">Fermer</label>
-            <input type="text" id="farmer" placeholder="Fermeri daxil edin">
+        <div class="panel">
+            <h2>Salam</h2>
+            <p>Zəhmət olmasa düzgün şifrəni daxil edərək giriş edin.</p>
         </div>
-        <div class="input-group">
-            <label for="type1">1-ci növ</label>
-            <input type="text" id="type1" placeholder="1-ci növü daxil edin">
-        </div>
-        <div class="input-group">
-            <label for="type2">2-ci növ</label>
-            <input type="text" id="type2" placeholder="2-ci növü daxil edin">
-        </div>
-        <div class="input-group">
-            <label for="type3">3-cü növ</label>
-            <input type="text" id="type3" placeholder="3-cü növü daxil edin">
-        </div>
-        <button onclick="addTemplate()">Yaddaşa Yaz</button>
-
-        <h2>Yaddaşda Qalan Şablonlar</h2>
-        <div id="templates"></div>
-        
+    </div>
 
     <script>
-        const binId = '66682ba8acd3cb34a855ed20'; // Günlük məlumatlar üçün JSONBin ID
+        const dailyBinId = '66682ba8acd3cb34a855ed20'; // Günlük məlumatlar üçün JSONBin ID
         const archiveBinId = '66687b99ad19ca34f8779583'; // Arxiv məlumatları üçün JSONBin ID
         const apiKey = '$2a$10$xXY4rAxopMe6S6j5dcr/t.N6veD4fKidRBXWW2/EYNWdt1qiCP176';
 
@@ -193,70 +183,51 @@
             });
         }
 
-        async function loadTemplates() {
-            const templates = await fetchTemplates(binId);
-            const templatesDiv = document.getElementById('templates');
-            templatesDiv.innerHTML = '';
-            templates.forEach((template, index) => {
-                displayTemplate(template, index);
-            });
+        function checkCredentials(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'Novleyici' && password === 'agro625534') {
+                showLoader();
+                setTimeout(() => {
+                    addTemplate();
+                }, 2000);
+            } else {
+                alert('Login və ya şifrə yanlışdır');
+            }
+        }
+
+        function showLoader() {
+            const loginButton = document.getElementById('loginButton');
+            loginButton.innerHTML = 'Gözləyin...';
+            loginButton.disabled = true;
         }
 
         async function addTemplate() {
-            const carNumber = document.getElementById('carNumber').value;
-            const farmer = document.getElementById('farmer').value;
-            const type1 = document.getElementById('type1').value;
-            const type2 = document.getElementById('type2').value;
-            const type3 = document.getElementById('type3').value;
+            const templates = await fetchTemplates(dailyBinId);
+            const newTemplate = {
+                carNumber: prompt('Maşının nömrəsi:'),
+                farmer: prompt('Fermer:'),
+                type1: prompt('1-ci növ:'),
+                type2: prompt('2-ci növ:'),
+                type3: prompt('3-cü növ:'),
+                weight: prompt('Çəki (kg):'),
+                date: new Date().toISOString().split('T')[0] // Tarixi bu günkü tarix kimi təyin edir
+            };
 
-            if (carNumber && farmer && type1 && type2 && type3) {
-                const templates = await fetchTemplates(binId);
-                const archiveTemplates = await fetchTemplates(archiveBinId);
-                const newTemplate = { carNumber, farmer, type1, type2, type3, date: new Date().toLocaleDateString('en-CA') };
+            if (newTemplate.carNumber && newTemplate.farmer && newTemplate.type1 && newTemplate.type2 && newTemplate.type3 && newTemplate.weight) {
                 templates.push(newTemplate);
-                archiveTemplates.push(newTemplate);
-                await saveTemplates(binId, templates);
-                await saveTemplates(archiveBinId, archiveTemplates);
-                displayTemplate(newTemplate, templates.length - 1);
-                clearInputs();
+                await saveTemplates(dailyBinId, templates);
+                await saveTemplates(archiveBinId, templates);
+                window.location.href = 'report.html';
+            } else {
+                alert('Zəhmət olmasa bütün məlumatları doldurun');
+                const loginButton = document.getElementById('loginButton');
+                loginButton.innerHTML = 'GİRİŞ ET';
+                loginButton.disabled = false;
             }
         }
-
-        async function deleteTemplate(index) {
-            const templates = await fetchTemplates(binId);
-            templates.splice(index, 1);
-            await saveTemplates(binId, templates);
-            loadTemplates();
-        }
-
-        function displayTemplate(template, index) {
-            const templatesDiv = document.getElementById('templates');
-            const templateDiv = document.createElement('div');
-            templateDiv.className = 'template';
-            templateDiv.innerHTML = `
-                <span>${template.carNumber} - ${template.farmer} - ${template.type1} - ${template.type2} - ${template.type3}</span>
-            `;
-            templatesDiv.appendChild(templateDiv);
-        }
-
-        function clearInputs() {
-            document.getElementById('carNumber').value = '';
-            document.getElementById('farmer').value = '';
-            document.getElementById('type1').value = '';
-            document.getElementById('type2').value = '';
-            document.getElementById('type3').value = '';
-        }
-
-        window.onload = async function() {
-            const templates = await fetchTemplates(binId);
-            const currentDate = new Date().toLocaleDateString('en-CA');
-
-            if (templates.length > 0 && templates[templates.length - 1].date !== currentDate) {
-                const updatedTemplates = templates.filter(template => template.date === currentDate);
-                await saveTemplates(binId, updatedTemplates);
-            }
-            loadTemplates();
-        };
     </script>
 </body>
 </html>
