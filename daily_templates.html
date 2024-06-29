@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Gündəlik Şablonlar</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -227,7 +227,6 @@
         async function loadDailyTemplates() {
             const templates = await fetchTemplates(binId);
             displayTemplates(templates);
-            calculateTotalWeight(templates);
         }
 
         function displayTemplates(templates) {
@@ -240,22 +239,15 @@
                 row.insertCell().textContent = template.type1;
                 row.insertCell().textContent = template.type2;
                 row.insertCell().textContent = template.type3;
-                const weightCell = row.insertCell();
-                weightCell.innerHTML = `
-                    <input type="number" class="weight-input" id="weight-${index}" value="${template.weight || ''}">
-                `;
+                row.insertCell().textContent = template.weight || '';
                 row.insertCell().textContent = template.date;
+
                 const actionsCell = row.insertCell();
                 actionsCell.innerHTML = `
                     <button class="edit-button" onclick="editTemplate(${index})">Düzəliş et</button>
                     <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
                 `;
             });
-        }
-
-        function calculateTotalWeight(templates) {
-            const totalWeight = templates.reduce((sum, template) => sum + (parseFloat(template.weight) || 0), 0);
-            document.getElementById('totalWeight').textContent = `Ümumi Çəki: ${totalWeight} kg`;
         }
 
         async function searchByDate() {
