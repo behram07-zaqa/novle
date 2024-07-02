@@ -264,20 +264,13 @@
 
         async function deleteTemplate(index) {
             const templates = await fetchTemplates(binId);
-            const archiveTemplates = await fetchTemplates(archiveBinId);
-            const itemToDelete = templates[index];
-
-            const updatedTemplates = templates.filter((template, idx) => idx !== index);
-            const updatedArchiveTemplates = archiveTemplates.filter(template => !(template.carNumber === itemToDelete.carNumber && template.date === itemToDelete.date));
-
-            await saveTemplates(binId, updatedTemplates);
-            await saveTemplates(archiveBinId, updatedArchiveTemplates);
+            templates.splice(index, 1);
+            await saveTemplates(binId, templates);
             loadDailyTemplates();
         }
 
         async function editTemplate(index) {
             const templates = await fetchTemplates(binId);
-            const archiveTemplates = await fetchTemplates(archiveBinId);
             const template = templates[index];
 
             const carNumber = prompt('Maşının nömrəsi:', template.carNumber);
@@ -289,14 +282,16 @@
 
             if (carNumber && farmer && type1 && type2 && type3 && weight) {
                 templates[index] = { carNumber, farmer, type1, type2, type3, weight, date: template.date };
-                archiveTemplates.forEach((archiveTemplate, idx) => {
-                    if (archiveTemplate.carNumber === template.carNumber && archiveTemplate.date === template.date) {
-                        archiveTemplates[idx] = { carNumber, farmer, type1, type2, type3, weight, date: template.date };
-                    }
-                });
 
                 await saveTemplates(binId, templates);
+
+                const archiveTemplates = await fetchTemplates(archiveBinId);
+                const archiveTemplateIndex = archiveTemplates.findIndex(archiveTemplate => archiveTemplate.carNumber === template.carNumber && archiveTemplate.date === template.date);
+                if (archiveTemplateIndex !== -1) {
+                    archiveTemplates[archiveTemplateIndex] = { carNumber, farmer, type1, type2, type3, weight, date: template.date };
+                }
                 await saveTemplates(archiveBinId, archiveTemplates);
+
                 loadDailyTemplates();
             }
         }
