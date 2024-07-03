@@ -211,14 +211,12 @@
 
                 if (carNumber && farmer && type1 && type2 && type3) {
                     const templates = await fetchTemplates(binId);
+                    const archiveTemplates = await fetchTemplates(archiveBinId);
                     const newTemplate = { carNumber, farmer, type1, type2, type3, date: new Date().toLocaleDateString('en-CA') };
                     templates.push(newTemplate);
-                    await saveTemplates(binId, templates);
-
-                    const archiveTemplates = await fetchTemplates(archiveBinId);
                     archiveTemplates.push(newTemplate);
+                    await saveTemplates(binId, templates);
                     await saveTemplates(archiveBinId, archiveTemplates);
-
                     displayTemplate(newTemplate, templates.length - 1);
                     clearInputs();
                 }
@@ -255,10 +253,14 @@
 
                 if (templates.length > 0 && templates[templates.length - 1].date !== currentDate) {
                     const updatedTemplates = templates.filter(template => template.date === currentDate);
+                    const archiveTemplates = await fetchTemplates(archiveBinId);
+                    const mergedTemplates = archiveTemplates.concat(updatedTemplates);
                     await saveTemplates(binId, updatedTemplates);
+                    await saveTemplates(archiveBinId, mergedTemplates);
                 }
                 loadTemplates();
             };
+            
         </script>
     </div>
 </body>
