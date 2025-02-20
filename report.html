@@ -169,8 +169,8 @@
             return data.record.templates || [];
         }
 
-        await saveTemplates(binId, templates);
-await saveTemplates(archiveBinId, templates);
+            await saveTemplates(binId, templates);
+            await saveTemplates(archiveBinId, templates);
  {
             await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
                 method: 'PUT',
@@ -182,57 +182,57 @@ await saveTemplates(archiveBinId, templates);
             });
         }
 
-        async function loadReport() {
-            const templates = await fetchTemplates(binId);
-            displayTemplates(templates);
-            calculateTotalWeight(templates);
-        }
+       async function loadReport() {
+    const templates = await fetchTemplates(binId); // Yalnız index.html-dən gələn məlumatları göstər
+    displayTemplates(templates);
+    calculateTotalWeight(templates);
+}
 
-        function displayTemplates(templates) {
-            const tbody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
-            tbody.innerHTML = '';
-            templates.forEach((template, index) => {
-                const row = tbody.insertRow();
-                row.insertCell().textContent = template.carNumber;
-                row.insertCell().textContent = template.farmer;
-                row.insertCell().textContent = template.type1;
-                row.insertCell().textContent = template.type2;
-                row.insertCell().textContent = template.type3;
-                const weightCell = row.insertCell();
-                weightCell.innerHTML = `
-                    <input type="number" class="weight-input" id="weight-${index}" value="${template.weight || ''}" ${template.weight ? 'disabled' : ''}>
-                `;
-                row.insertCell().textContent = template.date;
-                const actionCell = row.insertCell();
-                if (!template.weight) {
-                    actionCell.innerHTML = `
-                        <button class="save-button" onclick="saveWeight(${index})">Yadda saxla</button>
-                    `;
-                }
-                row.dataset.index = index;
-            });
-        }
+function displayTemplates(templates) {
+    const tbody = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+    templates.forEach((template, index) => {
+        const row = tbody.insertRow();
+        row.insertCell().textContent = template.carNumber;
+        row.insertCell().textContent = template.farmer;
+        row.insertCell().textContent = template.type1;
+        row.insertCell().textContent = template.type2;
+        row.insertCell().textContent = template.type3;
+        
+        const weightCell = row.insertCell();
+        weightCell.innerHTML = `
+            <input type="number" class="weight-input" id="weight-${index}" value="${template.weight || ''}">
+        `;
+        
+        row.insertCell().textContent = template.date;
 
-        function calculateTotalWeight(templates) {
-            const totalWeight = templates.reduce((sum, template) => sum + (parseFloat(template.weight) || 0), 0);
-            document.getElementById('totalWeight').textContent = `Ümumi Çəki: ${totalWeight} kg`;
-        }
+        const actionCell = row.insertCell();
+        actionCell.innerHTML = `
+            <button class="save-button" onclick="saveWeight(${index})">Yadda saxla</button>
+        `;
 
-        async function saveWeight(index) {
-            const weight = document.getElementById(`weight-${index}`).value;
-            if (!weight) {
-                alert('Zəhmət olmasa çəkini daxil edin');
-                return;
-            }
+        row.dataset.index = index;
+    });
+}
 
-            const templates = await fetchTemplates(binId);
-            templates[index].weight = parseFloat(weight);
-            await saveTemplates(binId, templates);
-            await saveTemplates(archiveBinId, templates);
-            loadReport();
-        }
+async function saveWeight(index) {
+    const weight = document.getElementById(`weight-${index}`).value;
+    if (!weight) {
+        alert('Zəhmət olmasa çəkini daxil edin');
+        return;
+    }
 
-        window.onload = loadReport;
+    const templates = await fetchTemplates(binId); // Günlük məlumatlar
+    templates[index].weight = parseFloat(weight); // Çəkini əlavə et
+
+    await saveTemplates(binId, templates);  // Günlük bazaya yaz
+    await saveTemplates(archiveBinId, templates); // Arxivə də yaz
+
+    loadReport(); // Yenilənmiş məlumatları göstər
+}
+
+window.onload = loadReport;
+
     </script>
 </body>
 </html>
