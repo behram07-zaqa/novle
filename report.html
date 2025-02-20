@@ -169,7 +169,9 @@
             return data.record.templates || [];
         }
 
-        async function saveTemplates(binId, templates) {
+        await saveTemplates(binId, templates);
+await saveTemplates(archiveBinId, templates);
+ {
             await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
                 method: 'PUT',
                 headers: {
