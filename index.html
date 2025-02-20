@@ -249,17 +249,17 @@
 
             window.onload = async function() {
     const templates = await fetchTemplates(binId);
-    const archiveTemplates = await fetchTemplates(archiveBinId); 
+    const archiveTemplates = await fetchTemplates(archiveBinId);
     const currentDate = new Date().toLocaleDateString('en-CA');
 
-    if (templates.length > 0 && templates[templates.length - 1].date !== currentDate) {
-        const updatedTemplates = templates.filter(template => template.date === currentDate);
-        
-        // Arxiv məlumatlarını olduğu kimi saxlayırıq
-        await saveTemplates(binId, updatedTemplates);
+    // Yeni gün başlayırsa, ancaq binId məlumatlarını sıfırla
+    if (templates.length > 0 && templates[0].date !== currentDate) {
+        await saveTemplates(binId, []);  // Günlük məlumatları sil, amma arxiv toxunmasın
     }
-    loadTemplates();
+
+    loadTemplates();  // Ekrana məlumatları yüklə
 };
+
 
             
         </script>
