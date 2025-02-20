@@ -177,21 +177,36 @@
     }
 
     async function saveWeight(index) {
-        const weightInput = document.getElementById(`weight-${index}`);
-        const weight = weightInput.value;
-        if (!weight) {
-            alert('Zəhmət olmasa çəkini daxil edin');
-            return;
-        }
-
-        const templates = await fetchTemplates(binId); // Günlük məlumatlar
-        templates[index].weight = parseFloat(weight); // Çəkini əlavə et
-
-        await saveTemplates(binId, templates);  // Günlük bazaya yaz
-        await saveTemplates(archiveBinId, templates); // Arxivə də yaz
-
-        loadReport(); // Yenilənmiş məlumatları göstər
+    const weightInput = document.getElementById(`weight-${index}`);
+    const weight = weightInput.value;
+    if (!weight) {
+        alert('Zəhmət olmasa çəkini daxil edin');
+        return;
     }
+
+    const dailyTemplates = await fetchTemplates(binId); // Günlük məlumatları gətir
+    const archiveTemplates = await fetchTemplates(archiveBinId); // Arxiv məlumatlarını gətir
+
+    dailyTemplates[index].weight = parseFloat(weight); // Çəkini gündəlik bazaya əlavə et
+
+    // Arxivdə artıq eyni gün və maşının nömrəsi varsa, onu dəyişdiririk, əks halda yeni məlumatı əlavə edirik
+    const existingIndex = archiveTemplates.findIndex(t => 
+        t.carNumber === dailyTemplates[index].carNumber && 
+        t.date === dailyTemplates[index].date
+    );
+
+    if (existingIndex !== -1) {
+        archiveTemplates[existingIndex].weight = parseFloat(weight);
+    } else {
+        archiveTemplates.push(dailyTemplates[index]); // Əgər yoxdur, yeni məlumatı əlavə edirik
+    }
+
+    await saveTemplates(binId, dailyTemplates);  // Günlük bazaya yaz
+    await saveTemplates(archiveBinId, archiveTemplates); // Arxivə yalnız dəyişən məlumatları yaz
+
+    loadReport(); // Yenilənmiş məlumatları göstər
+}
+
 
     function calculateTotalWeight(templates) {
         let totalWeight = templates.reduce((sum, template) => sum + (parseFloat(template.weight) || 0), 0);
