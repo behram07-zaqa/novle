@@ -142,16 +142,13 @@
 
             templates.forEach((template, index) => {
                 const row = tbody.insertRow();
-                row.insertCell().textContent = template.carNumber;
-                row.insertCell().textContent = template.farmer;
-                row.insertCell().textContent = template.type1;
-                row.insertCell().textContent = template.type2;
-                row.insertCell().textContent = template.type3;
 
-                const weightCell = row.insertCell();
-                weightCell.innerHTML = `
-                    <input type="number" class="weight-input" id="weight-${index}" value="${template.weight || ''}" disabled>
-                `;
+                const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
+                
+                fields.forEach((field, i) => {
+                    const cell = row.insertCell(i);
+                    cell.innerHTML = `<input type="text" class="edit-input" id="${field}-${index}" value="${template[field] || ''}" disabled>`;
+                });
 
                 row.insertCell().textContent = template.date;
 
@@ -168,21 +165,28 @@
         }
 
         function enableEdit(index) {
-            const weightInput = document.getElementById(`weight-${index}`);
-            weightInput.disabled = false;
-            weightInput.focus();
+            const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
 
-            weightInput.addEventListener('blur', async () => {
-                await updateWeight(index, weightInput.value);
-                weightInput.disabled = true;
+            fields.forEach(field => {
+                const input = document.getElementById(`${field}-${index}`);
+                input.disabled = false;
+                input.focus();
+
+                input.addEventListener('blur', async () => {
+                    await updateTemplate(index);
+                    input.disabled = true;
+                });
             });
         }
 
-        async function updateWeight(index, newWeight) {
-            if (!newWeight) return;
-
+        async function updateTemplate(index) {
+            const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
             const templates = await fetchTemplates();
-            templates[index].weight = parseFloat(newWeight);
+
+            fields.forEach(field => {
+                const input = document.getElementById(`${field}-${index}`);
+                templates[index][field] = input.value;
+            });
 
             await saveTemplates(templates);
         }
