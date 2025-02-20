@@ -224,10 +224,11 @@
             });
         }
 
-        async function loadDailyTemplates() {
-    const templates = await fetchTemplates(archiveBinId); // Arxiv binindən oxuyuruq
+       async function loadDailyTemplates() {
+    const templates = await fetchTemplates(archiveBinId); // Yalnız arxiv binindən oxu
     displayTemplates(templates);
 }
+
 
 
         function displayTemplates(templates) {
