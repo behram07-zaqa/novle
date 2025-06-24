@@ -1,239 +1,214 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arxiv</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #aec6ee 100%);
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        h1 {
-            text-align: center;
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #007BFF;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #fff;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            font-size: 14px;
-        }
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #eef5ff;
-        }
-        input {
-            width: 100%;
-            padding: 6px;
-            font-size: 14px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-        .edit-button, .delete-button {
-            padding: 6px 12px;
-            font-size: 14px;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-        .edit-button {
-            background-color: #28a745;
-        }
-        .delete-button {
-            background-color: #dc3545;
-        }
-        .edit-button:hover {
-            background-color: #218838;
-        }
-        .delete-button:hover {
-            background-color: #c82333;
-        }
-        @media (max-width: 768px) {
-            table, th, td {
-                font-size: 12px;
-                padding: 8px;
-            }
-            input {
-                font-size: 12px;
-            }
-            .edit-button, .delete-button {
-                font-size: 12px;
-                padding: 5px 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arxiv Məlumatlar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f8ff;
+      padding: 10px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #007BFF;
+      margin-bottom: 20px;
+    }
+    .filter {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .filter input, .filter button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .filter button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    .filter button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .action-buttons button {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+    .edit-btn {
+      background-color: #28a745;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+    }
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td {
+        font-size: 13px;
+      }
+      .filter input, .filter button {
+        font-size: 14px;
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Arxiv</h1>
-        <table id="archiveTable">
-            <thead>
-                <tr>
-                    <th>Maşının nömrəsi</th>
-                    <th>Fermer</th>
-                    <th>1-ci növ</th>
-                    <th>2-ci növ</th>
-                    <th>3-cü növ</th>
-                    <th>Çəki (kg)</th>
-                    <th>Tarix</th>
-                    <th>Əməliyyat</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+  <div class="container">
+    <h2>Arxiv Məlumatlar</h2>
+
+    <div class="filter">
+      <input type="date" id="filterDate" onchange="filterByDate()" />
+      <button onclick="exportToExcel()">Excel-ə göndər</button>
     </div>
 
-    <script>
-        const archiveBinId = '67b6d365acd3cb34a8e94722'; // Arxiv məlumatları üçün JSONBin ID
-        const apiKey = '$2a$10$5wzTHgtC0vgrGwIENwkphON2Sp/F9WgLvBN/ZQOi.fUsRcdLcJfTO';
+    <table id="archiveTable">
+      <thead>
+        <tr>
+          <th>Maşın</th>
+          <th>Fermer</th>
+          <th>1-ci növ</th>
+          <th>2-ci növ</th>
+          <th>3-cü növ</th>
+          <th>Çəki (kg)</th>
+          <th>Tarix</th>
+          <th>Əməliyyat</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-        async function fetchTemplates() {
-            try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}/latest`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Master-Key': apiKey
-                    }
-                });
-                const data = await response.json();
-                return data.record.templates || [];
-            } catch (error) {
-                console.error("Məlumatları çəkmək mümkün olmadı:", error);
-                return [];
-            }
-        }
+  <!-- Excel üçün kitabxana -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-        async function saveTemplates(templates) {
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': apiKey
-                    },
-                    body: JSON.stringify({ templates })
-                });
-            } catch (error) {
-                console.error("Məlumatları yadda saxlamaq mümkün olmadı:", error);
-            }
-        }
+  <script>
+    const archiveBinId = '685a8fe58960c979a5b0700f';
+    const apiKey = '$2a$10$XvrFlhL9CyMhkVKRFP0lLuHH5sxWiXCFPHoJvUMzymRReiRqgGOTK';
+    let allTemplates = [];
 
-        async function loadArchive() {
-            const templates = await fetchTemplates();
-            displayTemplates(templates);
-        }
-
-        function displayTemplates(templates) {
-            const tbody = document.getElementById('archiveTable').getElementsByTagName('tbody')[0];
-            tbody.innerHTML = '';
-
-            templates.forEach((template, index) => {
-                const row = tbody.insertRow();
-
-                const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
-                
-                fields.forEach((field, i) => {
-    const cell = row.insertCell(i);
-    const value = template[field] || '';
-
-    if (field === 'weight') {
-        cell.innerHTML = `<input type="number" class="edit-input" style="font-weight:bold;" id="${field}-${index}" value="${value}" disabled>`;
-    } else {
-        cell.innerHTML = `<input type="text" class="edit-input" id="${field}-${index}" value="${value}" disabled>`;
+    async function fetchTemplates() {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}/latest`, {
+        headers: { 'X-Master-Key': apiKey }
+      });
+      const data = await res.json();
+      return data.record.templates || [];
     }
-});
 
+    async function saveTemplates(templates) {
+      await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': apiKey
+        },
+        body: JSON.stringify({ templates })
+      });
+    }
 
-                row.insertCell().textContent = template.date;
+    async function loadArchive() {
+      allTemplates = await fetchTemplates();
+      displayTemplates(allTemplates);
+    }
 
-                const actionCell = row.insertCell();
-                actionCell.innerHTML = `
-                    <div class="action-buttons">
-                        <button class="edit-button" onclick="enableEdit(${index})">Düzəliş et</button>
-                        <button class="delete-button" onclick="deleteTemplate(${index})">Sil</button>
-                    </div>
-                `;
+    function displayTemplates(data) {
+      const tbody = document.querySelector("#archiveTable tbody");
+      tbody.innerHTML = '';
 
-                row.dataset.index = index;
-            });
-        }
+      data.forEach((item, index) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+          <td><input type="text" id="car-${index}" value="${item.carNumber}"></td>
+          <td><input type="text" id="farmer-${index}" value="${item.farmer}"></td>
+          <td><input type="text" id="type1-${index}" value="${item.type1}"></td>
+          <td><input type="text" id="type2-${index}" value="${item.type2}"></td>
+          <td><input type="text" id="type3-${index}" value="${item.type3}"></td>
+          <td><input type="number" id="weight-${index}" value="${item.weight || ''}"></td>
+          <td><input type="text" id="date-${index}" value="${item.date}" disabled></td>
+          <td class="action-buttons">
+            <button class="edit-btn" onclick="saveEdit(${index})">Yadda saxla</button>
+            <button class="delete-btn" onclick="deleteRow(${index})">Sil</button>
+          </td>
+        `;
+      });
+    }
 
-        function enableEdit(index) {
-            const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
+    async function saveEdit(index) {
+      allTemplates[index] = {
+        carNumber: document.getElementById(`car-${index}`).value,
+        farmer: document.getElementById(`farmer-${index}`).value,
+        type1: document.getElementById(`type1-${index}`).value,
+        type2: document.getElementById(`type2-${index}`).value,
+        type3: document.getElementById(`type3-${index}`).value,
+        weight: parseFloat(document.getElementById(`weight-${index}`).value),
+        date: document.getElementById(`date-${index}`).value
+      };
+      await saveTemplates(allTemplates);
+      alert("Dəyişiklik yadda saxlanıldı!");
+    }
 
-            fields.forEach(field => {
-                const input = document.getElementById(`${field}-${index}`);
-                input.disabled = false;
-                input.focus();
+    async function deleteRow(index) {
+      if (!confirm("Bu məlumatı silmək istədiyinizə əminsiniz?")) return;
+      allTemplates.splice(index, 1);
+      await saveTemplates(allTemplates);
+      loadArchive();
+    }
 
-                input.addEventListener('blur', async () => {
-                    await updateTemplate(index);
-                    input.disabled = true;
-                });
-            });
-        }
+    function filterByDate() {
+      const selected = document.getElementById("filterDate").value;
+      if (!selected) {
+        displayTemplates(allTemplates);
+        return;
+      }
+      const filtered = allTemplates.filter(item => item.date === selected);
+      displayTemplates(filtered);
+    }
 
-        async function updateTemplate(index) {
-            const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
-            const templates = await fetchTemplates();
+    function exportToExcel() {
+      const table = document.querySelector("#archiveTable");
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.table_to_sheet(table);
+      XLSX.utils.book_append_sheet(wb, ws, "Arxiv");
+      XLSX.writeFile(wb, "arxiv-melumatlari.xlsx");
+    }
 
-            fields.forEach(field => {
-                const input = document.getElementById(`${field}-${index}`);
-                templates[index][field] = input.value;
-            });
-
-            await saveTemplates(templates);
-        }
-
-        async function deleteTemplate(index) {
-            if (!confirm('Bu məlumatı silmək istədiyinizə əminsiniz?')) return;
-
-            const templates = await fetchTemplates();
-            templates.splice(index, 1);
-
-            await saveTemplates(templates);
-            loadArchive();
-        }
-
-        window.onload = loadArchive;
-    </script>
+    window.onload = loadArchive;
+  </script>
 </body>
 </html>
