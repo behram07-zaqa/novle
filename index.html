@@ -5,31 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Məlumat Əlavə Et</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fdfbfb, #ebedee);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      background: linear-gradient(120deg, #a6c0fe, #f68084);
       padding: 20px;
     }
     .container {
-      background: #fff;
-      width: 100%;
-      max-width: 450px;
-      padding: 30px 25px;
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
       border-radius: 15px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
     h2 {
       text-align: center;
       color: #007BFF;
-      margin-bottom: 25px;
     }
     .input-group {
       margin-bottom: 15px;
@@ -46,11 +38,6 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 16px;
-      transition: border-color 0.3s ease;
-    }
-    input:focus {
-      border-color: #007BFF;
-      outline: none;
     }
     button {
       width: 100%;
@@ -61,18 +48,39 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
+      transition: 0.3s ease;
     }
     button:hover {
       background-color: #0056b3;
-      transform: scale(1.03);
     }
-    @media screen and (max-width: 480px) {
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #eee;
+      text-align: center;
+      font-size: 15px;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    @media (max-width: 600px) {
       .container {
-        padding: 20px 15px;
+        padding: 20px;
       }
       input, button {
         font-size: 15px;
+      }
+      th, td {
+        font-size: 13px;
       }
     }
   </style>
@@ -83,26 +91,40 @@
 
     <div class="input-group">
       <label for="carNumber">Maşın nömrəsi</label>
-      <input type="text" id="carNumber" placeholder="Məs: 99-AA-123" />
+      <input type="text" id="carNumber" placeholder="99-AA-123">
     </div>
     <div class="input-group">
       <label for="farmer">Fermer</label>
-      <input type="text" id="farmer" placeholder="Fermer adı" />
+      <input type="text" id="farmer" placeholder="Fermer adı">
     </div>
     <div class="input-group">
       <label for="type1">1-ci növ</label>
-      <input type="text" id="type1" placeholder="Növ adı" />
+      <input type="text" id="type1" placeholder="Növ 1">
     </div>
     <div class="input-group">
       <label for="type2">2-ci növ</label>
-      <input type="text" id="type2" placeholder="Növ adı" />
+      <input type="text" id="type2" placeholder="Növ 2">
     </div>
     <div class="input-group">
       <label for="type3">3-cü növ</label>
-      <input type="text" id="type3" placeholder="Növ adı" />
+      <input type="text" id="type3" placeholder="Növ 3">
     </div>
 
     <button onclick="addTemplate()">Yadda saxla</button>
+
+    <table id="templateTable">
+      <thead>
+        <tr>
+          <th>Maşın</th>
+          <th>Fermer</th>
+          <th>1-ci növ</th>
+          <th>2-ci növ</th>
+          <th>3-cü növ</th>
+          <th>Tarix</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <script>
@@ -153,16 +175,36 @@
       await saveTemplates(binId, daily);
       await saveTemplates(archiveBinId, archive);
 
-      alert("Məlumat yadda saxlanıldı!");
+      displayTemplates(daily);
       document.querySelectorAll('input').forEach(i => i.value = '');
     }
 
+    function displayTemplates(templates) {
+      const tbody = document.querySelector("#templateTable tbody");
+      tbody.innerHTML = '';
+      templates.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.carNumber}</td>
+          <td>${item.farmer}</td>
+          <td>${item.type1}</td>
+          <td>${item.type2}</td>
+          <td>${item.type3}</td>
+          <td>${item.date}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
     window.onload = async () => {
-      const daily = await fetchTemplates(binId);
       const today = new Date().toLocaleDateString('en-CA');
+      const daily = await fetchTemplates(binId);
 
       if (daily.length > 0 && daily[0].date !== today) {
         await saveTemplates(binId, []);
+        displayTemplates([]);
+      } else {
+        displayTemplates(daily);
       }
     };
   </script>
