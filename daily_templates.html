@@ -171,9 +171,16 @@
                 const fields = ["carNumber", "farmer", "type1", "type2", "type3", "weight"];
                 
                 fields.forEach((field, i) => {
-                    const cell = row.insertCell(i);
-                    cell.innerHTML = `<input type="text" class="edit-input" id="${field}-${index}" value="${template[field] || ''}" disabled>`;
-                });
+    const cell = row.insertCell(i);
+    const value = template[field] || '';
+
+    if (field === 'weight') {
+        cell.innerHTML = `<input type="number" class="edit-input" style="font-weight:bold;" id="${field}-${index}" value="${value}" disabled>`;
+    } else {
+        cell.innerHTML = `<input type="text" class="edit-input" id="${field}-${index}" value="${value}" disabled>`;
+    }
+});
+
 
                 row.insertCell().textContent = template.date;
 
