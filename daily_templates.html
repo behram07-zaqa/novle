@@ -120,19 +120,21 @@
 
   <script>
     const archiveBinId = '685a8fe58960c979a5b0700f';
+    const binId = '685a8fd78960c979a5b07001';
     const apiKey = '$2a$10$XvrFlhL9CyMhkVKRFP0lLuHH5sxWiXCFPHoJvUMzymRReiRqgGOTK';
+
     let allTemplates = [];
 
-    async function fetchTemplates() {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}/latest`, {
+    async function fetchTemplates(bin) {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${bin}/latest`, {
         headers: { 'X-Master-Key': apiKey }
       });
       const data = await res.json();
       return data.record.templates || [];
     }
 
-    async function saveTemplates(templates) {
-      await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}`, {
+    async function saveTemplates(bin, templates) {
+      await fetch(`https://api.jsonbin.io/v3/b/${bin}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +145,7 @@
     }
 
     async function loadArchive() {
-      allTemplates = await fetchTemplates();
+      allTemplates = await fetchTemplates(archiveBinId);
       displayTemplates(allTemplates);
     }
 
@@ -170,7 +172,7 @@
     }
 
     async function saveEdit(index) {
-      allTemplates[index] = {
+      const updated = {
         carNumber: document.getElementById(`car-${index}`).value,
         farmer: document.getElementById(`farmer-${index}`).value,
         type1: document.getElementById(`type1-${index}`).value,
@@ -179,14 +181,29 @@
         weight: parseFloat(document.getElementById(`weight-${index}`).value),
         date: document.getElementById(`date-${index}`).value
       };
-      await saveTemplates(allTemplates);
+
+      // Güncəllə arxiv
+      allTemplates[index] = updated;
+      await saveTemplates(archiveBinId, allTemplates);
+
+      // Güncəllə gündəlik bin də əgər varsa
+      const daily = await fetchTemplates(binId);
+      const match = daily.find(t =>
+        t.carNumber === updated.carNumber &&
+        t.date === updated.date
+      );
+      if (match) {
+        Object.assign(match, updated);
+        await saveTemplates(binId, daily);
+      }
+
       alert("Dəyişiklik yadda saxlanıldı!");
     }
 
     async function deleteRow(index) {
       if (!confirm("Bu məlumatı silmək istədiyinizə əminsiniz?")) return;
       allTemplates.splice(index, 1);
-      await saveTemplates(allTemplates);
+      await saveTemplates(archiveBinId, allTemplates);
       loadArchive();
     }
 
