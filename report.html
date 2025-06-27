@@ -14,24 +14,40 @@
     .container {
       max-width: 1000px;
       margin: auto;
-      background: #fff;
+      background: white;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
     }
     h2 {
       text-align: center;
       color: #007BFF;
+      margin-bottom: 15px;
+    }
+    .filter {
+      text-align: center;
       margin-bottom: 20px;
+    }
+    .filter input {
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     th, td {
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #eee;
       text-align: center;
+      font-size: 14px;
     }
     th {
       background-color: #007BFF;
@@ -40,46 +56,45 @@
     input[type="number"] {
       width: 80px;
       padding: 5px;
-      font-size: 14px;
       border-radius: 5px;
       border: 1px solid #ccc;
     }
     .save-button {
-      padding: 6px 12px;
-      background-color: #28a745;
-      border: none;
+      background: #28a745;
       color: white;
+      border: none;
+      padding: 6px 12px;
       border-radius: 6px;
       cursor: pointer;
     }
     .save-button:hover {
-      background-color: #218838;
+      background: #218838;
     }
-    .total {
-      font-weight: bold;
-      font-size: 18px;
-      margin: 15px 0;
+    .total-weight {
+      margin-top: 15px;
       text-align: center;
+      font-size: 18px;
+      font-weight: bold;
       color: #007BFF;
     }
     @media (max-width: 768px) {
-      table, thead, tbody, th, td, tr {
+      th, td {
         font-size: 13px;
-      }
-      input[type="number"] {
-        width: 60px;
-      }
-      .save-button {
-        font-size: 12px;
-        padding: 5px 8px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Gündəlik Çəki Hesabatı</h2>
-    <div class="total" id="totalWeight">Ümumi Çəki: 0 kg</div>
+    <h2>Çəki Hesabatı</h2>
+
+    <div class="filter">
+      <input type="date" id="filterDate" onchange="filterByDate()" />
+      <button onclick="clearFilter()">Hamısını göstər</button>
+    </div>
+
+    <div class="total-weight" id="totalWeight">Ümumi Çəki: 0 kg</div>
+
     <table id="reportTable">
       <thead>
         <tr>
@@ -98,20 +113,20 @@
   </div>
 
   <script>
-    const binId = '685a8fd78960c979a5b07001';
     const archiveBinId = '685a8fe58960c979a5b0700f';
     const apiKey = '$2a$10$XvrFlhL9CyMhkVKRFP0lLuHH5sxWiXCFPHoJvUMzymRReiRqgGOTK';
+    let allTemplates = [];
 
-    async function fetchTemplates(bin) {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${bin}/latest`, {
+    async function fetchTemplates() {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}/latest`, {
         headers: { 'X-Master-Key': apiKey }
       });
       const data = await res.json();
       return data.record.templates || [];
     }
 
-    async function saveTemplates(bin, templates) {
-      await fetch(`https://api.jsonbin.io/v3/b/${bin}`, {
+    async function saveTemplates(templates) {
+      await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -122,18 +137,17 @@
     }
 
     async function loadReport() {
-      const templates = await fetchTemplates(binId);
-      renderTable(templates);
-      updateTotalWeight(templates);
+      allTemplates = await fetchTemplates();
+      displayTemplates(allTemplates);
     }
 
-    function renderTable(templates) {
+    function displayTemplates(data) {
       const tbody = document.querySelector("#reportTable tbody");
-      tbody.innerHTML = "";
+      tbody.innerHTML = '';
+      let total = 0;
 
-      templates.forEach((item, index) => {
+      data.forEach((item, index) => {
         const row = tbody.insertRow();
-
         row.innerHTML = `
           <td>${item.carNumber}</td>
           <td>${item.farmer}</td>
@@ -148,49 +162,40 @@
             ${item.weight ? '✔️' : `<button class="save-button" onclick="saveWeight(${index})">Yadda saxla</button>`}
           </td>
         `;
+
+        total += parseFloat(item.weight || 0);
       });
+
+      document.getElementById('totalWeight').innerText = `Ümumi Çəki: ${total.toFixed(1)} kg`;
     }
 
     async function saveWeight(index) {
-      const input = document.getElementById(`weight-${index}`);
-      const weight = parseFloat(input.value);
+      const weightInput = document.getElementById(`weight-${index}`);
+      const weight = parseFloat(weightInput.value);
 
       if (!weight) {
-        alert("Zəhmət olmasa çəkini daxil edin!");
+        alert("Zəhmət olmasa çəkini daxil edin.");
         return;
       }
 
-      const daily = await fetchTemplates(binId);
-      const archive = await fetchTemplates(archiveBinId);
-
-      daily[index].weight = weight;
-
-      // Əgər arxivdə həmin maşın və tarix varsa, onu da güncəllə
-      const match = archive.find(
-        x => x.carNumber === daily[index].carNumber && x.date === daily[index].date
-      );
-      if (match) {
-        match.weight = weight;
-      }
-
-      await saveTemplates(binId, daily);
-      await saveTemplates(archiveBinId, archive);
+      allTemplates[index].weight = weight;
+      await saveTemplates(allTemplates);
       loadReport();
     }
 
-    function updateTotalWeight(data) {
-      const total = data.reduce((sum, x) => sum + (parseFloat(x.weight) || 0), 0);
-      document.getElementById('totalWeight').textContent = `Ümumi Çəki: ${total.toFixed(1)} kg`;
+    function filterByDate() {
+      const date = document.getElementById("filterDate").value;
+      if (!date) return;
+      const filtered = allTemplates.filter(t => t.date === date);
+      displayTemplates(filtered);
     }
 
-    window.onload = async () => {
-      const daily = await fetchTemplates(binId);
-      const today = new Date().toLocaleDateString('en-CA');
-      if (daily.length > 0 && daily[0].date !== today) {
-        await saveTemplates(binId, []);
-      }
-      loadReport();
-    };
+    function clearFilter() {
+      document.getElementById("filterDate").value = '';
+      displayTemplates(allTemplates);
+    }
+
+    window.onload = loadReport;
   </script>
 </body>
 </html>
