@@ -8,16 +8,17 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(120deg, #a6c0fe, #f68084);
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
       padding: 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 650px;
       margin: auto;
-      background: white;
-      padding: 30px;
+      background: #fff;
+      padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
     }
     h2 {
       text-align: center;
@@ -27,57 +28,81 @@
       margin-bottom: 15px;
     }
     label {
-      display: block;
-      margin-bottom: 6px;
       font-weight: bold;
-      color: #333;
+      display: block;
+      margin-bottom: 5px;
     }
     input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
+      font-size: 15px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      font-size: 16px;
     }
     button {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       background-color: #007BFF;
       color: white;
       font-size: 16px;
       border: none;
       border-radius: 8px;
+      margin-top: 10px;
       cursor: pointer;
-      transition: 0.3s ease;
     }
     button:hover {
       background-color: #0056b3;
     }
     table {
       width: 100%;
-      margin-top: 30px;
+      margin-top: 20px;
       border-collapse: collapse;
       background-color: #fff;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     th, td {
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #eee;
       text-align: center;
-      font-size: 15px;
+      font-size: 14px;
     }
     th {
       background-color: #007BFF;
       color: white;
     }
+    /* 3 nöqtəli menyu */
+    .menu {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+    .dots {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 10;
+    }
+    .dropdown input {
+      width: 180px;
+      margin: 5px 0;
+    }
+    .dropdown.active {
+      display: block;
+    }
+
     @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
       input, button {
-        font-size: 15px;
+        font-size: 14px;
       }
       th, td {
         font-size: 13px;
@@ -87,6 +112,15 @@
 </head>
 <body>
   <div class="container">
+    <div class="menu">
+      <div class="dots" onclick="toggleDropdown()">⋮</div>
+      <div class="dropdown" id="dropdown">
+        <label for="searchDate"><strong>Tarixə görə bax:</strong></label>
+        <input type="date" id="searchDate" onchange="filterByDate()" />
+        <button onclick="clearFilter()">Hamısını göstər</button>
+      </div>
+    </div>
+
     <h2>Yeni Məlumat Əlavə Et</h2>
 
     <div class="input-group">
@@ -128,20 +162,20 @@
   </div>
 
   <script>
-    const binId = '685a8fd78960c979a5b07001';
     const archiveBinId = '685a8fe58960c979a5b0700f';
     const apiKey = '$2a$10$XvrFlhL9CyMhkVKRFP0lLuHH5sxWiXCFPHoJvUMzymRReiRqgGOTK';
+    let allTemplates = [];
 
-    async function fetchTemplates(bin) {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${bin}/latest`, {
+    async function fetchTemplates() {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}/latest`, {
         headers: { 'X-Master-Key': apiKey }
       });
       const data = await res.json();
       return data.record.templates || [];
     }
 
-    async function saveTemplates(bin, templates) {
-      await fetch(`https://api.jsonbin.io/v3/b/${bin}`, {
+    async function saveTemplates(templates) {
+      await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -166,23 +200,16 @@
       const today = new Date().toLocaleDateString('en-CA');
       const newData = { carNumber, farmer, type1, type2, type3, date: today };
 
-      const daily = await fetchTemplates(binId);
-      const archive = await fetchTemplates(archiveBinId);
-
-      daily.push(newData);
-      archive.push(newData);
-
-      await saveTemplates(binId, daily);
-      await saveTemplates(archiveBinId, archive);
-
-      displayTemplates(daily);
+      allTemplates.push(newData);
+      await saveTemplates(allTemplates);
+      displayTemplates(allTemplates);
       document.querySelectorAll('input').forEach(i => i.value = '');
     }
 
-    function displayTemplates(templates) {
+    function displayTemplates(data) {
       const tbody = document.querySelector("#templateTable tbody");
       tbody.innerHTML = '';
-      templates.forEach(item => {
+      data.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${item.carNumber}</td>
@@ -196,16 +223,25 @@
       });
     }
 
-    window.onload = async () => {
-      const today = new Date().toLocaleDateString('en-CA');
-      const daily = await fetchTemplates(binId);
+    function filterByDate() {
+      const selected = document.getElementById("searchDate").value;
+      if (!selected) return;
+      const filtered = allTemplates.filter(t => t.date === selected);
+      displayTemplates(filtered);
+    }
 
-      if (daily.length > 0 && daily[0].date !== today) {
-        await saveTemplates(binId, []);
-        displayTemplates([]);
-      } else {
-        displayTemplates(daily);
-      }
+    function clearFilter() {
+      document.getElementById("searchDate").value = '';
+      displayTemplates(allTemplates);
+    }
+
+    function toggleDropdown() {
+      document.getElementById("dropdown").classList.toggle("active");
+    }
+
+    window.onload = async () => {
+      allTemplates = await fetchTemplates();
+      displayTemplates(allTemplates);
     };
   </script>
 </body>
