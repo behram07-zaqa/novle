@@ -3,55 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Arxiv Məlumatlar</title>
+  <title>Arxiv</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f8ff;
+      background: #f4f6f9;
       padding: 10px;
     }
     .container {
       max-width: 1000px;
       margin: auto;
-      background: #fff;
+      background: white;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
     }
     h2 {
       text-align: center;
       color: #007BFF;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
     .filter {
       text-align: center;
       margin-bottom: 20px;
     }
-    .filter input, .filter button {
+    .filter input {
       padding: 10px;
-      font-size: 16px;
-      margin: 5px;
-      border-radius: 8px;
+      font-size: 15px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-    }
-    .filter button {
-      background-color: #007BFF;
-      color: white;
-      cursor: pointer;
-      border: none;
-    }
-    .filter button:hover {
-      background-color: #0056b3;
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     th, td {
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #eee;
       text-align: center;
+      font-size: 14px;
     }
     th {
       background-color: #007BFF;
@@ -59,13 +54,17 @@
     }
     input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 5px;
-      border-radius: 5px;
+      padding: 6px;
       border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    .action-buttons button {
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+    .edit-btn, .delete-btn {
       padding: 5px 10px;
-      margin: 2px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -81,11 +80,6 @@
       table, thead, tbody, th, td {
         font-size: 13px;
       }
-      .filter input, .filter button {
-        font-size: 14px;
-        width: 100%;
-        margin: 5px 0;
-      }
     }
   </style>
 </head>
@@ -95,7 +89,7 @@
 
     <div class="filter">
       <input type="date" id="filterDate" onchange="filterByDate()" />
-      <button onclick="exportToExcel()">Excel-ə göndər</button>
+      <button onclick="clearFilter()">Hamısını göstər</button>
     </div>
 
     <table id="archiveTable">
@@ -115,26 +109,21 @@
     </table>
   </div>
 
-  <!-- Excel üçün kitabxana -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <script>
     const archiveBinId = '685a8fe58960c979a5b0700f';
-    const binId = '685a8fd78960c979a5b07001';
     const apiKey = '$2a$10$XvrFlhL9CyMhkVKRFP0lLuHH5sxWiXCFPHoJvUMzymRReiRqgGOTK';
-
     let allTemplates = [];
 
-    async function fetchTemplates(bin) {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${bin}/latest`, {
+    async function fetchTemplates() {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}/latest`, {
         headers: { 'X-Master-Key': apiKey }
       });
       const data = await res.json();
       return data.record.templates || [];
     }
 
-    async function saveTemplates(bin, templates) {
-      await fetch(`https://api.jsonbin.io/v3/b/${bin}`, {
+    async function saveTemplates(templates) {
+      await fetch(`https://api.jsonbin.io/v3/b/${archiveBinId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +134,7 @@
     }
 
     async function loadArchive() {
-      allTemplates = await fetchTemplates(archiveBinId);
+      allTemplates = await fetchTemplates();
       displayTemplates(allTemplates);
     }
 
@@ -172,7 +161,7 @@
     }
 
     async function saveEdit(index) {
-      const updated = {
+      allTemplates[index] = {
         carNumber: document.getElementById(`car-${index}`).value,
         farmer: document.getElementById(`farmer-${index}`).value,
         type1: document.getElementById(`type1-${index}`).value,
@@ -181,48 +170,27 @@
         weight: parseFloat(document.getElementById(`weight-${index}`).value),
         date: document.getElementById(`date-${index}`).value
       };
-
-      // Güncəllə arxiv
-      allTemplates[index] = updated;
-      await saveTemplates(archiveBinId, allTemplates);
-
-      // Güncəllə gündəlik bin də əgər varsa
-      const daily = await fetchTemplates(binId);
-      const match = daily.find(t =>
-        t.carNumber === updated.carNumber &&
-        t.date === updated.date
-      );
-      if (match) {
-        Object.assign(match, updated);
-        await saveTemplates(binId, daily);
-      }
-
-      alert("Dəyişiklik yadda saxlanıldı!");
+      await saveTemplates(allTemplates);
+      alert("Yadda saxlandı!");
     }
 
     async function deleteRow(index) {
       if (!confirm("Bu məlumatı silmək istədiyinizə əminsiniz?")) return;
       allTemplates.splice(index, 1);
-      await saveTemplates(archiveBinId, allTemplates);
+      await saveTemplates(allTemplates);
       loadArchive();
     }
 
     function filterByDate() {
-      const selected = document.getElementById("filterDate").value;
-      if (!selected) {
-        displayTemplates(allTemplates);
-        return;
-      }
-      const filtered = allTemplates.filter(item => item.date === selected);
+      const date = document.getElementById("filterDate").value;
+      if (!date) return;
+      const filtered = allTemplates.filter(t => t.date === date);
       displayTemplates(filtered);
     }
 
-    function exportToExcel() {
-      const table = document.querySelector("#archiveTable");
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.table_to_sheet(table);
-      XLSX.utils.book_append_sheet(wb, ws, "Arxiv");
-      XLSX.writeFile(wb, "arxiv-melumatlari.xlsx");
+    function clearFilter() {
+      document.getElementById("filterDate").value = '';
+      displayTemplates(allTemplates);
     }
 
     window.onload = loadArchive;
